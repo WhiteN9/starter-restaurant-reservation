@@ -67,3 +67,26 @@ export async function listReservations(params, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+
+/**
+ * What does it do? Create a new reservation
+ * Saves the reservation to the database?
+ * Any validations?
+ * @param data
+ *  The reservation to save
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<deck>}
+ *  a promise that resolves the saved reservation, which will now have an `id` property?
+ */
+
+export async function createReservations(data, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations`);
+  const options = {
+    headers,
+    signal,
+    method: "POST",
+    body: JSON.stringify( data ),
+  };
+  return await fetchJson(url, options, data);
+}
