@@ -5,6 +5,8 @@ import CreateReservationForm from "./CreateReservationForm";
 import { createReservations } from "../utils/api";
 
 //Manage the state of the reservation form
+//onsubmit needs to work on
+//oncancel is ok
 function CreateReservation() {
   const history = useHistory();
 
@@ -36,6 +38,7 @@ function CreateReservation() {
 
   return (
     <React.Fragment>
+      <h1>Create Reservation</h1>
       <CreateReservationForm
         onSubmit={handleCreateReservations}
         onCancel={onCancel}
