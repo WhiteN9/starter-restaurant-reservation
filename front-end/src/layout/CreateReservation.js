@@ -6,7 +6,7 @@ import { createReservations } from "../utils/api";
 
 //Manage the state of the reservation form
 //onsubmit needs to work on
-function CreateReservation({date}) {
+function CreateReservation({ date }) {
   const history = useHistory();
 
   const initialFormInfo = {
@@ -22,8 +22,8 @@ function CreateReservation({date}) {
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
     const controller = new AbortController();
-    await createReservations(reservationInfo, controller.signal);
-    setReservationInfo();
+    await createReservations({ data: reservationInfo }, controller.signal);
+    setReservationInfo(initialFormInfo);
     history.go(0);
   };
 

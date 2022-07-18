@@ -17,7 +17,7 @@ function Dashboard({ date }) {
 
   const [dateTraverse, setDateTraverse] = useState(date);
 
-  useEffect(loadDashboard, [date]);
+  useEffect(loadDashboard, [date, dateTraverse]);
   // useEffect(setPreviousDate(date), []);
 
   function loadDashboard() {
@@ -45,7 +45,7 @@ function Dashboard({ date }) {
       <div className="row">
         <div className="col-md-6 col-lg-6 col-sm-12">
           <div className="d-md-flex mb-3">
-            <h4 className="mb-0">Reservations for {date}</h4>
+            <h4 className="mb-0">Reservations for {dateTraverse}</h4>
           </div>
           <div className="btn-group">
             <Link
@@ -59,7 +59,7 @@ function Dashboard({ date }) {
             <Link
               className="btn btn-secondary"
               onClick={handleTodayClick}
-              to={`/dashboard?date=${date}`}
+              to={`/dashboard?date=${dateTraverse}`}
             >
               Today
             </Link>

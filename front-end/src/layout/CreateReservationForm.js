@@ -2,6 +2,7 @@ import React from "react";
 
 //datemin = today
 //form-group and form-control class will help to style the inputs
+//update the input handler to add dash for evt.target.phone
 function CreateReservationForm({
   onSubmit,
   onCancel,
@@ -16,6 +17,7 @@ function CreateReservationForm({
       [evt.target.name]: evt.target.value,
     });
   };
+  console.table(reservationInfo)
   return (
     <form onSubmit={onSubmit}>
       <fieldset>
@@ -56,7 +58,8 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
-              placeholder="Mobile Number"
+              placeholder="Mobile Number: Numbers Only"
+              pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
               maxLength={10}
             ></input>
           </div>
