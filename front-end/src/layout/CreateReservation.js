@@ -1,12 +1,11 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useHistory } from "react-router";
 import CreateReservationForm from "./CreateReservationForm";
 import { createReservations } from "../utils/api";
 
 //Manage the state of the reservation form
 //onsubmit needs to work on
-//oncancel is ok
 function CreateReservation() {
   const history = useHistory();
 
@@ -20,15 +19,12 @@ function CreateReservation() {
   };
   const [reservationInfo, setReservationInfo] = useState(initialFormInfo);
 
-  useEffect(() => {
-    setReservationInfo({ ...reservationInfo });
-  }, ["?"]);
-
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
     const controller = new AbortController();
-    await createReservations("");
+    await createReservations(reservationInfo, controller.signal);
     setReservationInfo();
+    history.go(0);
   };
 
   const onCancel = () => {

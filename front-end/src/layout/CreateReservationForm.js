@@ -106,11 +106,12 @@ function CreateReservationForm({
           className="btn btn-secondary mr-2"
           onClick={onCancel}
         >
-          <span className="oi oi-x"></span> {cancelLabel}
+          <span className="oi oi-x"></span>
+          &nbsp;{cancelLabel}
         </button>
         <button type="submit" className="btn btn-primary">
           <span className="oi oi-check"></span>
-          {submitLabel}
+          &nbsp;{submitLabel}
         </button>
       </fieldset>
     </form>
