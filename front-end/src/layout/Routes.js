@@ -15,11 +15,11 @@ import CreateReservation from "./CreateReservation";
  * @returns {JSX.Element}
  */
 function Routes() {
-  const query = useQuery();
-  const date = query.get("date");
-  const limit = query.get("limit");
-  console.log("date: ", date);
-  console.log("limit: ", limit);
+  // const query = useQuery();
+  // const date = query.get("date");
+  // const limit = query.get("limit");
+  // console.log("date: ", date);
+  // console.log("limit: ", limit);
 
   return (
     <Switch>
@@ -27,7 +27,7 @@ function Routes() {
         <Redirect to={"/dashboard"} />
       </Route>
       <Route path="/reservations/new">
-        <CreateReservation />
+        <CreateReservation date={today()} />
       </Route>
       <Route exact={true} path="/reservations">
         <Redirect to={"/dashboard"} />

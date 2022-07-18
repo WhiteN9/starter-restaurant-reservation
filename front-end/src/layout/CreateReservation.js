@@ -6,14 +6,14 @@ import { createReservations } from "../utils/api";
 
 //Manage the state of the reservation form
 //onsubmit needs to work on
-function CreateReservation() {
+function CreateReservation({date}) {
   const history = useHistory();
 
   const initialFormInfo = {
     first_name: "",
     last_name: "",
     mobile_number: "",
-    reservation_date: "",
+    reservation_date: date,
     reservation_time: "",
     people: 1,
   };
@@ -42,6 +42,7 @@ function CreateReservation() {
         setReservationInfo={setReservationInfo}
         submitLabel="Submit"
         cancelLabel="Cancel"
+        date={date}
       />
     </React.Fragment>
   );
