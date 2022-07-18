@@ -30,9 +30,11 @@ headers.append("Content-Type", "application/json");
  *  If the response is not in the 200 - 399 range the promise is rejected.
  */
 async function fetchJson(url, options, onCancel) {
+  console.log(options.body)
   try {
-    const response = await fetch(url, options);
-
+    const response = await fetch(url, options); 
+    //this is where it sends the url and the data 'inside the options' to the express server and the database
+    console.log(response)
     if (response.status === 204) {
       return null;
     }
@@ -66,4 +68,27 @@ export async function listReservations(params, signal) {
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
+}
+
+/**
+ * What does it do? Create a new reservation
+ * Saves the reservation to the database?
+ * Any validations?
+ * @param data
+ *  The reservation form to save
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<deck>}
+ *  a promise that resolves the saved reservation, which will now have an `id` property?
+ */
+
+export async function createReservations(data, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations`);
+  const options = {
+    headers,
+    signal,
+    method: "POST",
+    body: JSON.stringify( data ),
+  };
+  return await fetchJson(url, options, data);
 }
