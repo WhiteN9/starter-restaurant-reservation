@@ -42,7 +42,6 @@ function Dashboard() {
   useEffect(dateChange, [queryDate]);
 
   function dateChange() {
-    queryDate = query.get("date");
     if (queryDate) {
       setDate(queryDate);
     } else setDate(today());

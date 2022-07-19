@@ -13,6 +13,7 @@ import useQuery from "../utils/useQuery";
  *
  * @returns {JSX.Element}
  */
+//why do we use useQuery here
 function Routes() {
   const query = useQuery();
   //get the date from the query

@@ -21,12 +21,12 @@ function CreateReservation({ date }) {
   const [reservationErrors, setReservationErrors] = useState([]);
 
   //Validate numbers
-  //Validate dates
+  
+  //Validate dates prior to sending the form
   const validateReservationDate = () => {
     const resDate = reservationInfo.reservation_date;
     const errorsArray = [];
     const dayOfTheWeek = new Date(resDate).getDay();
-    console.log(dayOfTheWeek);
     //UTC? local?
     if (dayOfTheWeek === 1) {
       errorsArray.push({ message: "The restaurant is closed on Tuesday." });
@@ -36,9 +36,7 @@ function CreateReservation({ date }) {
         message: "Reservation date/time must occur in the future.",
       });
     }
-
-    console.log(errorsArray);
-
+    // console.log(errorsArray);
     if (errorsArray.length === 0) {
       return true;
     } else {

@@ -31,9 +31,9 @@ async function create(req, res) {
     reservation_time,
     people,
   } = req.body.data);
-
+  console.log(newReservation);
   const createdReservation = await service.create(newReservation);
-
+  console.log(newReservation);
   res.status(201).json({ data: createdReservation });
 }
 /**

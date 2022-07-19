@@ -57,7 +57,7 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
-              placeholder="Mobile Number: xxx-xxx-xxxx"
+              placeholder="xxx-xxx-xxxx"
               pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
               maxLength={12}
             ></input>
@@ -99,12 +99,10 @@ function CreateReservationForm({
               id="people"
               name="people"
               type="number"
-              value={reservationInfo["people"]}
-              onChange={handleInputChange}
-              required
-              className="form-control"
+              value="1"
               step="1"
               min="1"
+              max="100"
             ></input>
           </div>
         </div>
