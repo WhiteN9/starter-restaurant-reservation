@@ -99,10 +99,10 @@ function CreateReservationForm({
               id="people"
               name="people"
               type="number"
-              value="1"
-              step="1"
-              min="1"
-              max="100"
+              value={reservationInfo["people"]}
+              onChange={handleInputChange}
+              required
+              className="form-control"
             ></input>
           </div>
         </div>

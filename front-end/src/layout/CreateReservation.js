@@ -14,7 +14,7 @@ function CreateReservation({ date }) {
     mobile_number: "",
     reservation_date: "",
     reservation_time: "",
-    people: "",
+    people: 1,
   };
   const [reservationInfo, setReservationInfo] = useState(initialFormInfo);
 
@@ -53,7 +53,6 @@ function CreateReservation({ date }) {
   //send the reservation info to the express server in form of an object with the key named `data`
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
-    console.log(reservationInfo.mobile_number);
     const controller = new AbortController();
     if (validateReservationDate()) {
       await createReservations({ data: reservationInfo }, controller.signal);

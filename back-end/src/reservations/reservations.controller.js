@@ -42,10 +42,7 @@ async function create(req, res) {
 //Check if reservation date is not a date, YYYY-MM-DD
 function validateResDate(req, res, next) {
   const dateRegex = /^20[2-9][0-9]-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])$/;
-
   const { data: { reservation_date } = {} } = req.body;
-  console.log(reservation_date);
-  console.log(typeof reservation_date);
   if (!reservation_date || !dateRegex.test(reservation_date)) {
     return next({
       status: 400,
@@ -58,8 +55,6 @@ function validateResDate(req, res, next) {
 function validateResTime(req, res, next) {
   const hour24Regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
   const { data: { reservation_time } = {} } = req.body;
-  console.log(reservation_time);
-  console.log(typeof reservation_time);
   if (!reservation_time || !hour24Regex.test(reservation_time)) {
     return next({
       status: 400,
@@ -71,6 +66,7 @@ function validateResTime(req, res, next) {
 //Check if people is not a number
 function validatePeople(req, res, next) {
   const { data: { people } = {} } = req.body;
+
   if (!people || typeof people !== "number") {
     return next({
       status: 400,

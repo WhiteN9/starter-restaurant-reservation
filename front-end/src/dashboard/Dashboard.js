@@ -81,7 +81,6 @@ function Dashboard() {
       );
     }
   );
-  console.log(reservationTable);
   return (
     <main>
       <h1>Dashboard</h1>
