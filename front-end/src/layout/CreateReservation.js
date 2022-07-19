@@ -17,11 +17,18 @@ function CreateReservation({ date }) {
     people: 1,
   };
   const [reservationInfo, setReservationInfo] = useState(initialFormInfo);
-
   const [reservationErrors, setReservationErrors] = useState([]);
 
-  //Validate numbers
-  
+  //why cannot convert like this?
+  //Turns the quantity of people is a number
+  const convertQuantityOfPeopleToNumber = () => {
+
+    // setReservationInfo({ ...reservationInfo, ["people"]: "1111111" });
+    setReservationInfo(initialFormInfo);
+
+    // reservationInfo.people = Number(reservationInfo.people);
+  };
+
   //Validate dates prior to sending the form
   const validateReservationDate = () => {
     const resDate = reservationInfo.reservation_date;
@@ -53,6 +60,8 @@ function CreateReservation({ date }) {
   //send the reservation info to the express server in form of an object with the key named `data`
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
+    convertQuantityOfPeopleToNumber();
+    console.log(reservationInfo);
     const controller = new AbortController();
     if (validateReservationDate()) {
       await createReservations({ data: reservationInfo }, controller.signal);

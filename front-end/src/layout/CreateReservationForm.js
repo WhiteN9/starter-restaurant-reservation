@@ -12,9 +12,14 @@ function CreateReservationForm({
   cancelLabel,
 }) {
   const handleInputChange = (evt) => {
+    const resName = evt.target.name;
+    const resValue = evt.target.value;
+    // if (resName === "people" && resValue) {
+    //   resValue = parseInt(resValue);
+    // }
     setReservationInfo({
       ...reservationInfo,
-      [evt.target.name]: evt.target.value,
+      [resName]: resValue,
     });
   };
   return (
