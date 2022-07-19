@@ -5,16 +5,16 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
  * List handler for reservation resources
  */
 async function list(req, res) {
-  res.json({
-    data: [],
-  });
+  console.log(req.query.date)
+  const date = req.query.date
+  const reservationList = await service.list(date);
+  res.json({ data: reservationList });
 }
 
 /**
  * Post handler for creating a reservation in the database
  */
 async function create(req, res) {
-  console.log(req)
   const newReservation = ({
     first_name,
     last_name,
@@ -33,6 +33,6 @@ async function create(req, res) {
  */
 
 module.exports = {
-  list,
+  list: asyncErrorBoundary(list),
   create: asyncErrorBoundary(create),
 };

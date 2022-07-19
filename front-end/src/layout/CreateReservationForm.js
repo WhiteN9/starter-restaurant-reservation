@@ -17,7 +17,6 @@ function CreateReservationForm({
       [evt.target.name]: evt.target.value,
     });
   };
-  console.table(reservationInfo)
   return (
     <form onSubmit={onSubmit}>
       <fieldset>

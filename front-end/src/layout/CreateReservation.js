@@ -4,8 +4,6 @@ import { useHistory } from "react-router";
 import CreateReservationForm from "./CreateReservationForm";
 import { createReservations } from "../utils/api";
 
-//Manage the state of the reservation form
-//onsubmit needs to work on
 function CreateReservation({ date }) {
   const history = useHistory();
 
@@ -18,7 +16,8 @@ function CreateReservation({ date }) {
     people: 1,
   };
   const [reservationInfo, setReservationInfo] = useState(initialFormInfo);
-
+  
+  //send the reservation info to the express server in form of an object with the key named `data`
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
     const controller = new AbortController();
