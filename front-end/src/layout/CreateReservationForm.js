@@ -12,12 +12,16 @@ function CreateReservationForm({
   cancelLabel,
 }) {
   const handleInputChange = (evt) => {
+    const resName = evt.target.name;
+    const resValue = evt.target.value;
+    // if (resName === "people" && resValue) {
+    //   resValue = parseInt(resValue);
+    // }
     setReservationInfo({
       ...reservationInfo,
-      [evt.target.name]: evt.target.value,
+      [resName]: resValue,
     });
   };
-  console.table(reservationInfo)
   return (
     <form onSubmit={onSubmit}>
       <fieldset>
@@ -58,9 +62,9 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
-              placeholder="Mobile Number: Numbers Only"
-              pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-              maxLength={10}
+              placeholder="xxx-xxx-xxxx"
+              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              maxLength={12}
             ></input>
           </div>
         </div>
@@ -75,6 +79,9 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
+              placeholder="YYYY-MM-DD"
+              pattern="\d{4}-\d{2}-\d{2}"
+              maxLength={8}
             ></input>
           </div>
           <div className="form-group col">
@@ -87,6 +94,8 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
+              placeholder="HH:MM"
+              pattern="[0-9]{2}:[0-9]{2}"
             ></input>
           </div>
           <div className="form-group col">
@@ -99,8 +108,6 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
-              step="1"
-              min="1"
             ></input>
           </div>
         </div>
