@@ -48,6 +48,41 @@ function Dashboard() {
     } else setDate(today());
   }
 
+  //after receiving an array of reservations, we need to format it and put it in the table
+  const reservationTable = reservations.map(
+    ({
+      reservation_id,
+      first_name,
+      last_name,
+      mobile_number,
+      reservation_date,
+      reservation_time,
+      people,
+    }) => {
+      return (
+        <tr>
+          <th scope={reservation_id}>{reservation_id}</th>
+          <td>
+            {last_name}, {first_name}
+          </td>
+          <td>{mobile_number}</td>
+          <td>{reservation_date}</td>
+          <td>{reservation_time}</td>
+          <td>{people}</td>
+          <td>
+            <a href="#">Button</a>
+          </td>
+          <td>
+            <a href="#">Button</a>
+          </td>
+          <td>
+            <a href="#">Button</a>
+          </td>
+        </tr>
+      );
+    }
+  );
+  console.log(reservationTable);
   return (
     <main>
       <h1>Dashboard</h1>
@@ -78,16 +113,31 @@ function Dashboard() {
               &nbsp;Next
             </Link>
           </div>
-          <div className="this is the resevation list"></div>
+          <div className="table-responsive">
+            <table className="table table-striped table-dark">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">NAME</th>
+                  <th scope="col">PHONE</th>
+                  <th scope="col">DATE</th>
+                  <th scope="col">TIME</th>
+                  <th scope="col">PEOPLE</th>
+                </tr>
+              </thead>
+              <tbody>{reservationTable}</tbody>
+            </table>
+          </div>
         </div>
         <div className="col-md-6 col-lg-6 col-sm-12">
           {/* RENDER A TABLE OF AVAILABLE TABLES */}
+
           <div className="this is the table"></div>
         </div>
       </div>
 
       <ErrorAlert error={reservationsError} />
-      {JSON.stringify(reservations)}
+      {/* {JSON.stringify(reservations)} */}
     </main>
   );
 }

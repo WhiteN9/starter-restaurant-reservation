@@ -16,14 +16,14 @@ function CreateReservation({ date }) {
     people: 1,
   };
   const [reservationInfo, setReservationInfo] = useState(initialFormInfo);
-  
+
   //send the reservation info to the express server in form of an object with the key named `data`
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
     const controller = new AbortController();
     await createReservations({ data: reservationInfo }, controller.signal);
     setReservationInfo(initialFormInfo);
-    history.go(0);
+    history.push("/");
   };
 
   const onCancel = () => {
