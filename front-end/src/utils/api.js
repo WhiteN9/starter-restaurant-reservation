@@ -31,7 +31,7 @@ headers.append("Content-Type", "application/json");
  */
 async function fetchJson(url, options, onCancel) {
   try {
-    const response = await fetch(url, options); 
+    const response = await fetch(url, options);
     //this is where it sends the url and the data 'inside the options' to the express server and the database
     if (response.status === 204) {
       return null;
@@ -53,7 +53,7 @@ async function fetchJson(url, options, onCancel) {
 }
 
 /**
- * Append the date as a key-value pair to the params. 
+ * Append the date as a key-value pair to the params.
  * i.e. dashboard?date=2022-07-18
  * Retrieves all existing reservation.
  * @returns {Promise<[reservation]>}
@@ -86,7 +86,7 @@ export async function createReservations(data, signal) {
     headers,
     signal,
     method: "POST",
-    body: JSON.stringify( data ),
+    body: JSON.stringify({ data }),
   };
   return await fetchJson(url, options, data);
 }

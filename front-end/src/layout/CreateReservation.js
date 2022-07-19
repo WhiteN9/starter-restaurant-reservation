@@ -19,23 +19,13 @@ function CreateReservation({ date }) {
   const [reservationInfo, setReservationInfo] = useState(initialFormInfo);
   const [reservationErrors, setReservationErrors] = useState([]);
 
-  //why cannot convert like this?
-  //Turns the quantity of people is a number
-  const convertQuantityOfPeopleToNumber = () => {
-
-    // setReservationInfo({ ...reservationInfo, ["people"]: "1111111" });
-    setReservationInfo(initialFormInfo);
-
-    // reservationInfo.people = Number(reservationInfo.people);
-  };
-
   //Validate dates prior to sending the form
   const validateReservationDate = () => {
     const resDate = reservationInfo.reservation_date;
     const errorsArray = [];
-    const dayOfTheWeek = new Date(resDate).getDay();
-    //UTC? local?
-    if (dayOfTheWeek === 1) {
+    const dayOfTheWeek = new Date(resDate).getUTCDay();
+    //UTC
+    if (dayOfTheWeek === 2) {
       errorsArray.push({ message: "The restaurant is closed on Tuesday." });
     }
     if (resDate < date) {
@@ -43,7 +33,6 @@ function CreateReservation({ date }) {
         message: "Reservation date/time must occur in the future.",
       });
     }
-    // console.log(errorsArray);
     if (errorsArray.length === 0) {
       return true;
     } else {
@@ -57,14 +46,11 @@ function CreateReservation({ date }) {
       return <ErrorAlert key={index} error={error} />;
     });
   };
-  //send the reservation info to the express server in form of an object with the key named `data`
+  //send the reservation info to the express server
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
-    convertQuantityOfPeopleToNumber();
-    console.log(reservationInfo);
-    const controller = new AbortController();
     if (validateReservationDate()) {
-      await createReservations({ data: reservationInfo }, controller.signal);
+      await createReservations({ ...reservationInfo, people: parseInt(reservationInfo.people) });
       setReservationInfo(initialFormInfo);
       history.push(`/dashboard?date=${reservationInfo.reservation_date}`);
     }
