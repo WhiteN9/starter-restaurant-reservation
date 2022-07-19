@@ -92,8 +92,6 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
-              placeholder="HH:MM"
-              pattern="[0-9]{2}:[0-9]{2}"
             ></input>
           </div>
           <div className="form-group col">

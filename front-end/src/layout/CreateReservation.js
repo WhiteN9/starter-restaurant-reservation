@@ -20,11 +20,11 @@ function CreateReservation({ date }) {
   const [reservationErrors, setReservationErrors] = useState([]);
 
   //Validate dates prior to sending the form
-  const validateReservationDate = () => {
-    const resDate = reservationInfo.reservation_date;
+  const validateReservationDateTime = () => {
     const errorsArray = [];
+
+    const resDate = reservationInfo.reservation_date;
     const dayOfTheWeek = new Date(resDate).getUTCDay();
-    //UTC
     if (dayOfTheWeek === 2) {
       errorsArray.push({ message: "The restaurant is closed on Tuesday." });
     }
@@ -33,6 +33,10 @@ function CreateReservation({ date }) {
         message: "Reservation date/time must occur in the future.",
       });
     }
+
+    const resTime = reservationInfo.reservation_time;
+    console.log(resTime)
+
     if (errorsArray.length === 0) {
       return true;
     } else {
@@ -49,8 +53,11 @@ function CreateReservation({ date }) {
   //send the reservation info to the express server
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
-    if (validateReservationDate()) {
-      await createReservations({ ...reservationInfo, people: parseInt(reservationInfo.people) });
+    if (validateReservationDateTime()) {
+      await createReservations({
+        ...reservationInfo,
+        people: parseInt(reservationInfo.people),
+      });
       setReservationInfo(initialFormInfo);
       history.push(`/dashboard?date=${reservationInfo.reservation_date}`);
     }
