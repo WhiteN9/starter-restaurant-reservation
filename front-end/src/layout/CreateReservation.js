@@ -36,7 +36,9 @@ function CreateReservation({ date }) {
 
     const resTime = reservationInfo.reservation_time;
     console.log(resTime)
-
+    //resTime cannot be before 10:30 or after 21:30
+    //resTime cannot be before the current time of making reservation
+    
     if (errorsArray.length === 0) {
       return true;
     } else {
