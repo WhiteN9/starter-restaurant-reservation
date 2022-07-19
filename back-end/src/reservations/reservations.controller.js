@@ -31,9 +31,7 @@ async function create(req, res) {
     reservation_time,
     people,
   } = req.body.data);
-  console.log(newReservation);
   const createdReservation = await service.create(newReservation);
-  console.log(newReservation);
   res.status(201).json({ data: createdReservation });
 }
 /**
@@ -43,14 +41,33 @@ async function create(req, res) {
 function validateResDate(req, res, next) {
   const dateRegex = /^20[2-9][0-9]-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])$/;
   const { data: { reservation_date } = {} } = req.body;
-  if (!reservation_date || !dateRegex.test(reservation_date)) {
+  
+  const today = new Date()
+  const newResDate = new Date(reservation_date)
+  if (
+    !reservation_date ||
+    !dateRegex.test(reservation_date || newResDate < today)
+  ) {
     return next({
       status: 400,
-      message: `reservation_date must be a date from today to future dates`,
+      message: `reservation_date must be present or future dates only`,
     });
   }
   next();
 }
+
+function validateResDateIsNotTuesday(req, res, next) {
+  const { data: { reservation_date } = {} } = req.body;
+  const dayOfTheWeek = new Date(reservation_date).getUTCDay();
+  if (dayOfTheWeek === 2) {
+    return next({
+      status: 400,
+      message: `the store is closed on tuesday`,
+    });
+  }
+  next();
+}
+
 //Check if reservation time is not a time, 00:00 - 23:59
 function validateResTime(req, res, next) {
   const hour24Regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
@@ -80,6 +97,7 @@ module.exports = {
   create: [
     hasRequiredProperties,
     validateResDate,
+    validateResDateIsNotTuesday,
     validateResTime,
     validatePeople,
     asyncErrorBoundary(create),

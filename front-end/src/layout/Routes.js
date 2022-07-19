@@ -18,7 +18,7 @@ function Routes() {
   const query = useQuery();
   //get the date from the query
   const date = query.get("date");
-  console.log("url date in Router: ", date);
+  // console.log("url date in Router: ", date);
   //pass in that date as
   // let date = today();
   return (
