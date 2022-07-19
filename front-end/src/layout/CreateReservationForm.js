@@ -57,9 +57,9 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
-              placeholder="Mobile Number: Numbers Only"
-              pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-              maxLength={10}
+              placeholder="Mobile Number: xxx-xxx-xxxx"
+              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+              maxLength={12}
             ></input>
           </div>
         </div>
@@ -74,6 +74,9 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
+              placeholder="YYYY-MM-DD"
+              pattern="\d{4}-\d{2}-\d{2}"
+              maxLength={8}
             ></input>
           </div>
           <div className="form-group col">
@@ -86,6 +89,8 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
+              placeholder="HH:MM"
+              pattern="[0-9]{2}:[0-9]{2}"
             ></input>
           </div>
           <div className="form-group col">

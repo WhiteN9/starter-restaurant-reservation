@@ -60,7 +60,7 @@ function Dashboard() {
       people,
     }) => {
       return (
-        <tr>
+        <tr key={reservation_id}>
           <th scope={reservation_id}>{reservation_id}</th>
           <td>
             {last_name}, {first_name}
