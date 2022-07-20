@@ -1,6 +1,7 @@
 const dateFormat = /\d\d\d\d-\d\d-\d\d/;
 const timeFormat = /\d\d:\d\d/;
-
+// const date = '2022-07-19-00:010Z'
+// date.toUTC('2022-07-19-00:010Z') // 2022-07-19-00:010Z
 /**
  * Formats a Date object as YYYY-MM-DD.
  *
