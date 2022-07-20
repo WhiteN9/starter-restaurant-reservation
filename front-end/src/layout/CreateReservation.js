@@ -22,23 +22,43 @@ function CreateReservation({ date }) {
   //Validate dates prior to sending the form
   const validateReservationDateTime = () => {
     const errorsArray = [];
+    const currentDateTime = new Date(Date.now());
+    const reservationDateTimeString =
+      reservationInfo.reservation_date +
+      "T" +
+      reservationInfo.reservation_time +
+      ":00";
 
-    const resDate = reservationInfo.reservation_date;
-    const dayOfTheWeek = new Date(resDate).getUTCDay();
-    if (dayOfTheWeek === 2) {
+    //Check if the reservation date is not a tuesday or in the past
+    const reservationDateTime = new Date(reservationDateTimeString);
+    if (reservationDateTime.getDay() === 2) {
       errorsArray.push({ message: "The restaurant is closed on Tuesday." });
     }
-    if (resDate < date) {
+    if (reservationDateTime < currentDateTime) {
       errorsArray.push({
         message: "Reservation date/time must occur in the future.",
       });
     }
 
-    const resTime = reservationInfo.reservation_time;
-    console.log(resTime)
-    //resTime cannot be before 10:30 or after 21:30
-    //resTime cannot be before the current time of making reservation
-    
+    //Check if the reservation time is within the valid timeframe
+    const resHour = reservationDateTime.getHours();
+    const resMinutes = reservationDateTime.getMinutes();
+    if ((resHour === 10 && resMinutes <= 29) || resHour < 10) {
+      errorsArray.push({
+        message: "Please select a time between 10:30 and 21:30",
+      });
+    } else if ((resHour === 21 && resMinutes >= 31) || resHour > 21) {
+      errorsArray.push({
+        message: "Please select a time between 10:30 and 21:30",
+      });
+    }
+
+    // const dailyOpenDateTime = new Date(`${date}T10:30:00`)
+    // const dailyCloseDateTime = new Date(`${date}T21:30:00`)
+    // console.log(dailyOpenDateTime)
+    // console.log(dailyCloseDateTime)
+
+    //If there is any error, set the error objects and render the error instead of submitting form
     if (errorsArray.length === 0) {
       return true;
     } else {
@@ -47,12 +67,14 @@ function CreateReservation({ date }) {
     }
   };
 
+  //Create element to display errors on the CreateReservation component
   const reservationErrorsList = () => {
     return reservationErrors.map((error, index) => {
       return <ErrorAlert key={index} error={error} />;
     });
   };
-  //send the reservation info to the express server
+
+  //Send the reservation info to the express server
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
     if (validateReservationDateTime()) {
@@ -65,9 +87,12 @@ function CreateReservation({ date }) {
     }
   };
 
+  //Go back to the previous page or to the dashboard after clicking cancel
   const onCancel = () => {
     setReservationInfo(initialFormInfo);
-    history.goBack();
+    if (history.length > 1) {
+      history.goBack();
+    } else history.push("/");
   };
 
   return (

@@ -16,6 +16,7 @@ const hasRequiredProperties = hasProperties(
 async function list(req, res) {
   const date = req.query.date;
   const reservationList = await service.list(date);
+  console.log(reservationList);
   res.json({ data: reservationList });
 }
 
@@ -41,9 +42,9 @@ async function create(req, res) {
 function validateResDate(req, res, next) {
   const dateRegex = /^20[2-9][0-9]-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])$/;
   const { data: { reservation_date } = {} } = req.body;
-  
-  const today = new Date()
-  const newResDate = new Date(reservation_date)
+
+  const today = new Date();
+  const newResDate = new Date(reservation_date);
   if (
     !reservation_date ||
     !dateRegex.test(reservation_date || newResDate < today)
