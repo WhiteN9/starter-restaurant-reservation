@@ -38,7 +38,9 @@ async function create(req, res) {
 /**
  * Middleware validations for a post request
  */
-//Check if reservation date is not a date, YYYY-MM-DD
+//Check if reservation date is in a valid date format, YYYY-MM-DD
+//reservation_date = string '2022-07-27T06:00:00.000Z'
+//It can be convert back to Date object and be compared against today's date
 function validateResDate(req, res, next) {
   const dateRegex = /^20[2-9][0-9]-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])$/;
   const { data: { reservation_date } = {} } = req.body;
@@ -57,6 +59,7 @@ function validateResDate(req, res, next) {
   next();
 }
 
+//Check if reservation date is not on a Tuesday
 function validateResDateIsNotTuesday(req, res, next) {
   const { data: { reservation_date } = {} } = req.body;
   const dayOfTheWeek = new Date(reservation_date).getUTCDay();
@@ -69,9 +72,9 @@ function validateResDateIsNotTuesday(req, res, next) {
   next();
 }
 
-//Check if reservation time is not a time, 00:00 - 23:59
+//Check if reservation time is in a valid time format and within a loose timeframe, 10:00 - 21:59
 function validateResTime(req, res, next) {
-  const hour24Regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+  const hour24Regex = /^(1[0-9]|2[0-1]):[0-5][0-9]$/;
   const { data: { reservation_time } = {} } = req.body;
   if (!reservation_time || !hour24Regex.test(reservation_time)) {
     return next({
@@ -81,6 +84,31 @@ function validateResTime(req, res, next) {
   }
   next();
 }
+
+//Check if the reservation time is in a strict timeframe, 10:30 - 21:30
+//reservation_date = string '2022-07-27T06:00:00.000Z'
+function validateResTimeStrict(req, res, next) {
+  const { data: { reservation_time, reservation_date } = {} } = req.body;
+  const reservationDateTime = new Date(
+    `${reservation_date.slice(0, 10)}T${reservation_time}`
+  );
+  console.log(reservationDateTime);
+  const resHour = reservationDateTime.getHours();
+  const resMinutes = reservationDateTime.getMinutes();
+  if ((resHour === 10 && resMinutes <= 29) || resHour < 10) {
+    return next({
+      status: 400,
+      message: `reservation_time must be a number within 23:59`,
+    });
+  } else if ((resHour === 21 && resMinutes >= 31) || resHour > 21) {
+    return next({
+      status: 400,
+      message: `reservation_time must be a number within 23:59`,
+    });
+  }
+  next();
+}
+
 //Check if people is not a number
 function validatePeople(req, res, next) {
   const { data: { people } = {} } = req.body;
@@ -100,6 +128,7 @@ module.exports = {
     validateResDate,
     validateResDateIsNotTuesday,
     validateResTime,
+    validateResTimeStrict,
     validatePeople,
     asyncErrorBoundary(create),
   ],

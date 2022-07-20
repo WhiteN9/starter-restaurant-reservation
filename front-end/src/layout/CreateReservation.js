@@ -22,7 +22,7 @@ function CreateReservation({ date }) {
   //Validate dates prior to sending the form
   const validateReservationDateTime = () => {
     const errorsArray = [];
-    const currentDateTime = new Date(Date.now());
+    const currentDateTime = new Date();
     const reservationDateTimeString =
       reservationInfo.reservation_date +
       "T" +
