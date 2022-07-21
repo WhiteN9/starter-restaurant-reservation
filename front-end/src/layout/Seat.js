@@ -1,20 +1,17 @@
 import React from "react";
+
 import SeatForm from "./SeatForm";
-
+import { useHistory } from "react-router-dom";
 function Seat() {
-
-
-
+  const history = useHistory();
   const handleTableAssignment = async (evt) => {
     evt.preventDefault();
 
-      // await updateReservation({});
+    // await updateReservation({});
 
-      // history.push(`/dashboard?date=${reservationInfo.reservation_date}`);
-
+    // history.push(`/dashboard?date=${reservationInfo.reservation_date}`);
   };
   const onCancel = () => {
-    
     if (history.length > 1) {
       history.goBack();
     } else history.push("/");

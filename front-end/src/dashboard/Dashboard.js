@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { Link } from "react-router-dom";
 import { today, previous, next } from "../utils/date-time";
@@ -28,7 +28,7 @@ function Dashboard() {
       .then(setReservations)
       .catch(setReservationsError);
 
-    // listTables({ id }, abortController.signal).then(setTables);
+    listTables(abortController.signal).then(setTables);
     return () => abortController.abort();
   }
 
@@ -63,6 +63,7 @@ function Dashboard() {
           reservation_date,
           reservation_time,
           people,
+          status,
         }) => {
           return (
             <tr key={reservation_id}>
@@ -74,6 +75,7 @@ function Dashboard() {
               <td>{reservation_date}</td>
               <td>{reservation_time}</td>
               <td>{people}</td>
+              <td>{status}</td>
               <td>
                 <Link
                   className="btn btn-secondary"
@@ -92,14 +94,15 @@ function Dashboard() {
       </tr>
     );
 
+  console.log(tables);
   const tableList = tables.map((table) => {
     return (
       <tr>
-        <td>table.table_id</td>
-        <td>table.table_name</td>
-        <td>table.capacity</td>
+        <td>{table.table_id}</td>
+        <td>{table.table_name}</td>
+        <td>{table.capacity}</td>
         <td data-table-id-status={table.table_id}>
-          Reservation exists ? Occupied : Free
+          {table.reservation_id === null ? "Free" : "Occupied"}
         </td>
       </tr>
     );
@@ -144,6 +147,7 @@ function Dashboard() {
                   <th scope="col">DATE</th>
                   <th scope="col">TIME</th>
                   <th scope="col">PEOPLE</th>
+                  <th scope="col">STATUS</th>
                 </tr>
               </thead>
               <tbody>{reservationList}</tbody>

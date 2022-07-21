@@ -32,7 +32,7 @@ headers.append("Content-Type", "application/json");
 async function fetchJson(url, options, onCancel) {
   try {
     const response = await fetch(url, options);
-    //this is where it sends the url and the data 'inside the options' to the express server and the database
+    //this is where JS sends the url and the data 'inside the options' to the express server.
     if (response.status === 204) {
       return null;
     }
@@ -70,11 +70,9 @@ export async function listReservations(params, signal) {
 }
 
 /**
- * What does it do? Create a new reservation
- * Saves the reservation to the database?
- * Any validations?
+ * Sends the reservation form to the express server after validating the form.
  * @param data
- *  The reservation form to save
+ *  The reservation form to save.
  * @param signal
  *  optional AbortController.signal
  * @returns {Promise<deck>}
@@ -89,4 +87,14 @@ export async function createReservations(data, signal) {
     body: JSON.stringify({ data }),
   };
   return await fetchJson(url, options, data);
+}
+
+/**
+ * Retrieves all existing tables.
+ * @returns {Promise<[table]>}
+ *  a promise that resolves to a possibly empty array of table saved in the database.
+ */
+export async function listTables(signal) {
+  const url = new URL(`${API_BASE_URL}/tables`);
+  return await fetchJson(url, { headers, signal }, []);
 }

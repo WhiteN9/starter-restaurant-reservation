@@ -20,7 +20,7 @@ function SeatForm({
               <option value>Select a table</option>
               <option>Insert the rest of the tables here</option>
               <option>
-                `{table.table_name} - {table.capacity}`
+                {/* `{table.table_name} - {table.capacity}` */}
               </option>
             </select>
           </div>
