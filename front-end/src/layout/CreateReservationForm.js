@@ -12,14 +12,9 @@ function CreateReservationForm({
   cancelLabel,
 }) {
   const handleInputChange = (evt) => {
-    const resName = evt.target.name;
-    const resValue = evt.target.value;
-    // if (resName === "people" && resValue) {
-    //   resValue = parseInt(resValue);
-    // }
     setReservationInfo({
       ...reservationInfo,
-      [resName]: resValue,
+      [evt.target.name]: evt.target.value,
     });
   };
   return (
@@ -62,7 +57,7 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
-              placeholder="xxx-xxx-xxxx"
+              placeholder="Mobile Number"
             ></input>
           </div>
         </div>
@@ -77,9 +72,8 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
-              placeholder="YYYY-MM-DD"
               pattern="\d{4}-\d{2}-\d{2}"
-              maxLength={8}
+              max=""
             ></input>
           </div>
           <div className="form-group col">
@@ -104,6 +98,7 @@ function CreateReservationForm({
               onChange={handleInputChange}
               required
               className="form-control"
+              aria-label="Number of People"
             ></input>
           </div>
         </div>

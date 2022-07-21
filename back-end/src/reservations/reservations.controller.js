@@ -41,6 +41,7 @@ async function create(req, res) {
 //Check if reservation date is in a valid date format, YYYY-MM-DD
 //reservation_date = string '2022-07-27T06:00:00.000Z'
 //It can be convert back to Date object and be compared against today's date
+//Max year is 2099
 function validateResDate(req, res, next) {
   const dateRegex = /^20[2-9][0-9]-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])$/;
   const { data: { reservation_date } = {} } = req.body;
@@ -92,7 +93,6 @@ function validateResTimeStrict(req, res, next) {
   const reservationDateTime = new Date(
     `${reservation_date.slice(0, 10)}T${reservation_time}`
   );
-  console.log(reservationDateTime);
   const resHour = reservationDateTime.getHours();
   const resMinutes = reservationDateTime.getMinutes();
   if ((resHour === 10 && resMinutes <= 29) || resHour < 10) {

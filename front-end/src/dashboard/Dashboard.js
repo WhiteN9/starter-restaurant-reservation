@@ -17,6 +17,8 @@ function Dashboard() {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
+  const [tables, setTables] = useState([]);
+
   useEffect(loadDashboard, [date]);
 
   function loadDashboard() {
@@ -25,6 +27,8 @@ function Dashboard() {
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
+
+    // listTables({ id }, abortController.signal).then(setTables);
     return () => abortController.abort();
   }
 
@@ -48,39 +52,58 @@ function Dashboard() {
   }
 
   //after receiving an array of reservations, we need to format it and put it in the table
-  const reservationTable = reservations.map(
-    ({
-      reservation_id,
-      first_name,
-      last_name,
-      mobile_number,
-      reservation_date,
-      reservation_time,
-      people,
-    }) => {
-      return (
-        <tr key={reservation_id}>
-          <th scope={reservation_id}>{reservation_id}</th>
-          <td>
-            {last_name}, {first_name}
-          </td>
-          <td>{mobile_number}</td>
-          <td>{reservation_date}</td>
-          <td>{reservation_time}</td>
-          <td>{people}</td>
-          <td>
-            <a href="#">Button</a>
-          </td>
-          <td>
-            <a href="#">Button</a>
-          </td>
-          <td>
-            <a href="#">Button</a>
-          </td>
-        </tr>
-      );
-    }
-  );
+  const reservationList =
+    reservations.length > 0 ? (
+      reservations.map(
+        ({
+          reservation_id,
+          first_name,
+          last_name,
+          mobile_number,
+          reservation_date,
+          reservation_time,
+          people,
+        }) => {
+          return (
+            <tr key={reservation_id}>
+              <th scope={reservation_id}>{reservation_id}</th>
+              <td>
+                {last_name}, {first_name}
+              </td>
+              <td>{mobile_number}</td>
+              <td>{reservation_date}</td>
+              <td>{reservation_time}</td>
+              <td>{people}</td>
+              <td>
+                <Link
+                  className="btn btn-secondary"
+                  to={`reservations/${reservation_id}/seat`}
+                >
+                  Seat
+                </Link>
+              </td>
+            </tr>
+          );
+        }
+      )
+    ) : (
+      <tr>
+        <td colSpan={6}>No reservations found.</td>
+      </tr>
+    );
+
+  const tableList = tables.map((table) => {
+    return (
+      <tr>
+        <td>table.table_id</td>
+        <td>table.table_name</td>
+        <td>table.capacity</td>
+        <td data-table-id-status={table.table_id}>
+          Reservation exists ? Occupied : Free
+        </td>
+      </tr>
+    );
+  });
   return (
     <main>
       <h1>Dashboard</h1>
@@ -123,14 +146,24 @@ function Dashboard() {
                   <th scope="col">PEOPLE</th>
                 </tr>
               </thead>
-              <tbody>{reservationTable}</tbody>
+              <tbody>{reservationList}</tbody>
             </table>
           </div>
         </div>
         <div className="col-md-6 col-lg-6 col-sm-12">
-          {/* RENDER A TABLE OF AVAILABLE TABLES */}
-
-          <div className="this is the table"></div>
+          <div className="table-responsive">
+            <table className="table table-striped table-dark">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">TABLE NAME</th>
+                  <th scope="col">CAPACITY</th>
+                  <th scope="col">Free?</th>
+                </tr>
+              </thead>
+              <tbody>{tableList}</tbody>
+            </table>
+          </div>
         </div>
       </div>
 
