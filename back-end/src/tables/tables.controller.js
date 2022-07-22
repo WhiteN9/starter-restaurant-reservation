@@ -9,7 +9,6 @@ async function list(req, res) {
   const tableList = await service.list();
   res.json({ data: tableList });
 }
-
 /**
  * Post handler for creating a table in the database
  */
@@ -18,9 +17,8 @@ async function create(req, res) {
   const createdTable = await service.create(data);
   res.status(201).json({ data: createdTable });
 }
-
 /**
- * Put handle for updating the two tables in the database
+ * Put handler for updating the two tables in the database
  */
 async function updateTable(req, res) {
   const { data: { reservation_id } = {} } = req.body;
@@ -29,11 +27,23 @@ async function updateTable(req, res) {
     reservation_id,
     table_id,
   });
-  res.status(200).json({ data: updatedTables });
+  res.json({ data: updatedTables });
+}
+/**
+ * Delete handler for clearing out finished tables
+ */
+//Send in the data that contains table_id and reservation_id, and set the reservation_id's status to null
+async function clearFinishedTable(req, res) {
+  const table = res.locals.table;
+  const clearedTables = await service.clearFinishedTable(
+    table.table_id,
+    table.reservation_id
+  );
+  res.json({ data: clearedTables });
 }
 
 /**
- * Middlewares to validate POST request
+ * Middlewares to validate the POST request
  */
 function validateTableName(req, res, next) {
   const { data: { table_name } = {} } = req.body;
@@ -58,7 +68,7 @@ function validateCapacityIsANumber(req, res, next) {
 }
 
 /**
- * Middlewares to validate PUT request
+ * Middlewares to validate the PUT request
  */
 //Use reservation_id from the request body to find the Reservation
 async function validateReservationExists(req, res, next) {
@@ -109,10 +119,23 @@ function validateTableCapacity(req, res, next) {
 function validateIfTableIsOccupied(req, res, next) {
   const table = res.locals.table;
   if (table.reservation_id) {
-    console.log("Table is occupied");
     return next({
       status: 400,
       message: "Table is occupied",
+    });
+  }
+  next();
+}
+
+/**
+ * Middlewares to validate the DELETE request
+ */
+function validateIfTableIsNotOccupied(req, res, next) {
+  const table = res.locals.table;
+  if (!table.reservation_id) {
+    return next({
+      status: 400,
+      message: "Table is not occupied",
     });
   }
   next();
@@ -134,5 +157,10 @@ module.exports = {
     validateTableCapacity,
     validateIfTableIsOccupied,
     updateTable,
+  ],
+  delete: [
+    asyncErrorBoundary(validateTableExists),
+    validateIfTableIsNotOccupied,
+    asyncErrorBoundary(clearFinishedTable),
   ],
 };

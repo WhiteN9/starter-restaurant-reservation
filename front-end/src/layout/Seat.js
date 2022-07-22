@@ -64,7 +64,7 @@ function Seat() {
       ]);
       return;
     }
-    await updateTable(table_id, {
+    await updateTable(selectedTable.table_id, {
       reservation_id: reservationById.reservation_id,
     });
     setReservationById(null);

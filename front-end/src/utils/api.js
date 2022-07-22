@@ -151,3 +151,22 @@ export async function updateTable(tableId, data, signal) {
   };
   return await fetchJson(url, options, data);
 }
+
+/**
+ * Sends the delete request to the express server
+ * @param tableId
+ *  The id of the table that needs to be cleared out.
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<deck>}
+ *  a promise that resolves two updated tables, `reservations` table and `tables` table
+ */
+export async function clearFinishedTable(tableId, signal) {
+  const url = new URL(`${API_BASE_URL}/tables/${tableId}/seat`);
+  const options = {
+    headers,
+    signal,
+    method: "DELETE",
+  };
+  return await fetchJson(url, options, []);
+}

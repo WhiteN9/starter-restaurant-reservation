@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
-import { listReservations, listTables } from "../utils/api";
+import { listReservations, listTables, clearFinishedTable } from "../utils/api";
 import { today, previous, next } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
 /**
@@ -51,6 +51,25 @@ function Dashboard() {
     } else setDate(today());
   }
 
+  const handleClearTable = async (evt) => {
+    try {
+      if (
+        window.confirm(
+          "Is this table ready to seat new guests? This cannot be undone."
+        )
+      ) {
+        const abortController = new AbortController();
+        const tableId = evt.target.getAttribute("data-table-id-finish");
+        await clearFinishedTable(tableId, abortController.signal);
+        loadDashboard();
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setReservationsError(error);
+      } else return;
+    }
+  };
+
   //after receiving an array of reservations, we need to format it and put it in the table
   const reservationList =
     reservations.length > 0 ? (
@@ -94,7 +113,6 @@ function Dashboard() {
       </tr>
     );
 
-  console.log(tables);
   const tableList = tables.map(
     ({ table_id, table_name, capacity, reservation_id }) => {
       return (
@@ -105,6 +123,18 @@ function Dashboard() {
           <td data-table-id-status={table_id}>
             {reservation_id === null ? "Free" : "Occupied"}
           </td>
+          {reservation_id ? (
+            <td>
+              <button
+                type="button"
+                data-table-id-finish={table_id}
+                className="btn btn-light"
+                onClick={handleClearTable}
+              >
+                Finish
+              </button>
+            </td>
+          ) : null}
         </tr>
       );
     }
