@@ -16,8 +16,14 @@ const hasRequiredProperties = hasProperties(
 async function list(req, res) {
   const date = req.query.date;
   const reservationList = await service.list(date);
-  console.log(reservationList);
   res.json({ data: reservationList });
+}
+
+/**
+ * Read handler for single reservation resource.
+ */
+function read(req, res) {
+  res.json({ data: res.locals.reservation });
 }
 
 /**
@@ -35,12 +41,27 @@ async function create(req, res) {
   const createdReservation = await service.create(newReservation);
   res.status(201).json({ data: createdReservation });
 }
+
 /**
- * Middleware validations for a post request
+ * Middleware validation for the GET read request
+ */
+async function reservationExists(req, res, next) {
+  const resId = req.params.resId;
+  const reservation = await service.read(resId);
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  }
+  next({ status: 404, message: `Reservation ${resId} is not found.` });
+}
+
+/**
+ * Middleware validations for a POST create request
  */
 //Check if reservation date is in a valid date format, YYYY-MM-DD
-//reservation_date = string '2022-07-27T06:00:00.000Z'
+//reservation_date = string '2022-07-27'
 //It can be convert back to Date object and be compared against today's date
+//Max year is 2099
 function validateResDate(req, res, next) {
   const dateRegex = /^20[2-9][0-9]-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])$/;
   const { data: { reservation_date } = {} } = req.body;
@@ -86,21 +107,20 @@ function validateResTime(req, res, next) {
 }
 
 //Check if the reservation time is in a strict timeframe, 10:30 - 21:30
-//reservation_date = string '2022-07-27T06:00:00.000Z'
+//reservation_date = string '2022-07-27'
 function validateResTimeStrict(req, res, next) {
   const { data: { reservation_time, reservation_date } = {} } = req.body;
   const reservationDateTime = new Date(
-    `${reservation_date.slice(0, 10)}T${reservation_time}`
+    `${reservation_date}T${reservation_time}`
   );
-  console.log(reservationDateTime);
   const resHour = reservationDateTime.getHours();
   const resMinutes = reservationDateTime.getMinutes();
-  if ((resHour === 10 && resMinutes <= 29) || resHour < 10) {
-    return next({
-      status: 400,
-      message: `reservation_time must be a number within 23:59`,
-    });
-  } else if ((resHour === 21 && resMinutes >= 31) || resHour > 21) {
+  if (
+    (resHour === 10 && resMinutes <= 29) ||
+    resHour < 10 ||
+    (resHour === 21 && resMinutes >= 31) ||
+    resHour > 21
+  ) {
     return next({
       status: 400,
       message: `reservation_time must be a number within 23:59`,
@@ -123,6 +143,7 @@ function validatePeople(req, res, next) {
 }
 module.exports = {
   list: asyncErrorBoundary(list),
+  read: [asyncErrorBoundary(reservationExists), read],
   create: [
     hasRequiredProperties,
     validateResDate,

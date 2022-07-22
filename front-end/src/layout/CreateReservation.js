@@ -1,9 +1,8 @@
-import React from "react";
-import { useState } from "react";
-import { useHistory } from "react-router";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import CreateReservationForm from "./CreateReservationForm";
-import { createReservations } from "../utils/api";
 import ErrorAlert from "./ErrorAlert";
+import { createReservations } from "../utils/api";
 
 function CreateReservation({ date }) {
   const history = useHistory();
@@ -53,11 +52,6 @@ function CreateReservation({ date }) {
       });
     }
 
-    // const dailyOpenDateTime = new Date(`${date}T10:30:00`)
-    // const dailyCloseDateTime = new Date(`${date}T21:30:00`)
-    // console.log(dailyOpenDateTime)
-    // console.log(dailyCloseDateTime)
-
     //If there is any error, set the error objects and render the error instead of submitting form
     if (errorsArray.length === 0) {
       return true;
@@ -96,7 +90,7 @@ function CreateReservation({ date }) {
   };
 
   return (
-    <React.Fragment>
+    <main>
       <h1>Create Reservation</h1>
       {reservationErrors.length > 0 ? reservationErrorsList() : null}
       <CreateReservationForm
@@ -107,7 +101,7 @@ function CreateReservation({ date }) {
         submitLabel="Submit"
         cancelLabel="Cancel"
       />
-    </React.Fragment>
+    </main>
   );
 }
 

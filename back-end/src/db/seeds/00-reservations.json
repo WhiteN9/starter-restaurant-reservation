@@ -40,13 +40,51 @@
     "updated_at": "2020-12-10T08:31:32.326Z"
   },
   {
-    "first_name": "Anthony",
-    "last_name": "Charboneau",
-    "mobile_number": "620-646-8897",
-    "reservation_date": "2026-12-30",
+    "first_name": "Jolteon",
+    "last_name": "Eevee",
+    "mobile_number": "135-000-0000",
+    "reservation_date": "2022-07-21",
     "reservation_time": "18:00",
-    "people": 2,
-    "created_at": "2020-12-10T08:31:32.326Z",
-    "updated_at": "2020-12-10T08:31:32.326Z"
+    "people": 1
+  },
+  {
+    "first_name": "Vaporeon",
+    "last_name": "Eevee",
+    "mobile_number": "134-000-0000",
+    "reservation_date": "2022-07-21",
+    "reservation_time": "18:00",
+    "people": 2
+  },
+  {
+    "first_name": "Sylveon",
+    "last_name": "Eevee",
+    "mobile_number": "700-000-0000",
+    "reservation_date": "2022-07-21",
+    "reservation_time": "18:00",
+    "people": 3
+  },
+  {
+    "first_name": "Espeon",
+    "last_name": "Eevee",
+    "mobile_number": "196-000-0000",
+    "reservation_date": "2022-07-22",
+    "reservation_time": "18:00",
+    "people": 4
+  },
+  {
+    "first_name": "Glaceon",
+    "last_name": "Eevee",
+    "mobile_number": "471-000-0000",
+    "reservation_date": "2022-07-22",
+    "reservation_time": "18:00",
+    "people": 5
+  },
+  {
+    "first_name": "Leafeon",
+    "last_name": "Eevee",
+    "mobile_number": "470-000-0000",
+    "reservation_date": "2022-07-22",
+    "reservation_time": "18:00",
+    "people": 6
   }
 ]
