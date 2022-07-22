@@ -37,7 +37,7 @@ function Routes() {
       <Route path="/reservations/new">
         <CreateReservation date={today()} />
       </Route>
-      <Route path="/reservations/:tableId/seat">
+      <Route path="/reservations/:resId/seat">
         <Seat />
       </Route>
       <Route path="/tables/new">

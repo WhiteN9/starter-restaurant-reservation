@@ -1,9 +1,8 @@
-import React from "react";
-import { useState } from "react";
-import { useHistory } from "react-router";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import CreateReservationForm from "./CreateReservationForm";
-import { createReservations } from "../utils/api";
 import ErrorAlert from "./ErrorAlert";
+import { createReservations } from "../utils/api";
 
 function CreateReservation({ date }) {
   const history = useHistory();

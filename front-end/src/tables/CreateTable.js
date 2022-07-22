@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import CreateTableForm from "./CreateTableForm";
+import { createTables } from "../utils/api";
 
 function CreateTable() {
   const history = useHistory();
@@ -14,8 +15,10 @@ function CreateTable() {
   //Send the table info to the express server
   const handleCreateTable = async (evt) => {
     evt.preventDefault();
-    //need to create createtable function in api
-    // await createTables({ data: tableInfo });
+    await createTables({
+      ...tableInfo,
+      capacity: parseInt(tableInfo.capacity),
+    });
     setTableInfo(initialTableInfo);
     history.push("/");
   };

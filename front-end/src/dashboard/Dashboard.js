@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables } from "../utils/api";
-import ErrorAlert from "../layout/ErrorAlert";
 import { Link } from "react-router-dom";
+import ErrorAlert from "../layout/ErrorAlert";
+import { listReservations, listTables } from "../utils/api";
 import { today, previous, next } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
 /**
@@ -11,7 +11,7 @@ import useQuery from "../utils/useQuery";
  * @returns {JSX.Element}
  */
 
-//I was able to create a handle date click, but not sure how to get it update immediately
+//Maybe an error handler for table, in case of no table?
 function Dashboard() {
   const [date, setDate] = useState(today());
   const [reservations, setReservations] = useState([]);
@@ -95,18 +95,20 @@ function Dashboard() {
     );
 
   console.log(tables);
-  const tableList = tables.map((table) => {
-    return (
-      <tr>
-        <td>{table.table_id}</td>
-        <td>{table.table_name}</td>
-        <td>{table.capacity}</td>
-        <td data-table-id-status={table.table_id}>
-          {table.reservation_id === null ? "Free" : "Occupied"}
-        </td>
-      </tr>
-    );
-  });
+  const tableList = tables.map(
+    ({ table_id, table_name, capacity, reservation_id }) => {
+      return (
+        <tr key={table_id}>
+          <td>{table_id}</td>
+          <td>{table_name}</td>
+          <td>{capacity}</td>
+          <td data-table-id-status={table_id}>
+            {reservation_id === null ? "Free" : "Occupied"}
+          </td>
+        </tr>
+      );
+    }
+  );
   return (
     <main>
       <h1>Dashboard</h1>

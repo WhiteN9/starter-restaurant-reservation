@@ -14,4 +14,5 @@ router
   .post(controller.create)
   .all(methodNotAllowed);
 
+router.route("/:resId").get(controller.read).all(methodNotAllowed);
 module.exports = router;

@@ -1,11 +1,18 @@
 function SeatForm({
   onSubmit,
   onCancel,
-  // tables, not sure
-  // setTables, not sure
+  setSelectedTable,
   submitLabel,
   cancelLabel,
+  tableOptions,
+  tables,
 }) {
+  const handleTableSelection = (evt) => {
+    const findSelectedTable = tables.find(
+      (table) => table.table_id === parseInt(evt.target.value)
+    );
+    setSelectedTable(findSelectedTable);
+  };
   return (
     <form onSubmit={onSubmit}>
       <fieldset>
@@ -16,12 +23,10 @@ function SeatForm({
               id="table_id"
               name="table_id"
               className="form-control required"
+              onChange={handleTableSelection}
             >
               <option value>Select a table</option>
-              <option>Insert the rest of the tables here</option>
-              <option>
-                {/* `{table.table_name} - {table.capacity}` */}
-              </option>
+              {tableOptions}
             </select>
           </div>
         </div>
