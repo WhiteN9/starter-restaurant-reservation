@@ -84,27 +84,45 @@ function Dashboard() {
           people,
           status,
         }) => {
-          return (
-            <tr key={reservation_id}>
-              <th scope={reservation_id}>{reservation_id}</th>
-              <td>
-                {last_name}, {first_name}
-              </td>
-              <td>{mobile_number}</td>
-              <td>{reservation_date}</td>
-              <td>{reservation_time}</td>
-              <td>{people}</td>
-              <td>{status}</td>
-              <td>
-                <Link
-                  className="btn btn-secondary"
-                  to={`reservations/${reservation_id}/seat`}
-                >
-                  Seat
-                </Link>
-              </td>
-            </tr>
-          );
+          if (status === "finished") {
+            return null;
+          } else if (status === "seated") {
+            return (
+              <tr key={reservation_id}>
+                <th scope={reservation_id}>{reservation_id}</th>
+                <td>
+                  {last_name}, {first_name}
+                </td>
+                <td>{mobile_number}</td>
+                <td>{reservation_date}</td>
+                <td>{reservation_time}</td>
+                <td>{people}</td>
+                <td data-reservation-id-status={reservation_id}>{status}</td>
+              </tr>
+            );
+          } else if (status === "booked") {
+            return (
+              <tr key={reservation_id}>
+                <th scope={reservation_id}>{reservation_id}</th>
+                <td>
+                  {last_name}, {first_name}
+                </td>
+                <td>{mobile_number}</td>
+                <td>{reservation_date}</td>
+                <td>{reservation_time}</td>
+                <td>{people}</td>
+                <td data-reservation-id-status={reservation_id}>{status}</td>
+                <td>
+                  <Link
+                    className="btn btn-secondary"
+                    to={`reservations/${reservation_id}/seat`}
+                  >
+                    Seat
+                  </Link>
+                </td>
+              </tr>
+            );
+          }
         }
       )
     ) : (
