@@ -15,7 +15,7 @@ const hasRequiredProperties = hasProperties(
  */
 async function list(req, res) {
   const date = req.query.date;
-  const reservationList = await service.list(date);
+  const reservationList = await service.list(date, "finished");
   res.json({ data: reservationList });
 }
 
@@ -41,9 +41,20 @@ async function create(req, res) {
   const createdReservation = await service.create(newReservation);
   res.status(201).json({ data: createdReservation });
 }
+/**
+ * Put handler for updating the status of a reservation
+ */
+async function updateStatus(req, res) {
+  const updateReservation = {
+    ...res.locals.reservation,
+    status: req.body.data.status,
+  };
+  const updatedRes = await service.updateNewStatus(updateReservation);
+  res.json({ data: updatedRes });
+}
 
 /**
- * Middleware validation for the GET read request
+ * Middleware validations for the GET read request
  */
 async function reservationExists(req, res, next) {
   const resId = req.params.resId;
@@ -132,7 +143,7 @@ function validateResTimeStrict(req, res, next) {
 //Check if people is not a number
 function validatePeople(req, res, next) {
   const { data: { people } = {} } = req.body;
-
+  // console.log(people, typeof people);
   if (!people || typeof people !== "number") {
     return next({
       status: 400,
@@ -141,6 +152,43 @@ function validatePeople(req, res, next) {
   }
   next();
 }
+
+//Check if there is status property and it is valid
+function validateStatusIsValid(req, res, next) {
+  const { data: { status } = {} } = req.body;
+  if (status === "seated" || status === "finished") {
+    return next({
+      status: 400,
+      message: `status cannot be seated or finished`,
+    });
+  }
+  next();
+}
+
+/**
+ * Middleware validations for the PUT update status request
+ */
+function validateValidStatus(req, res, next) {
+  const {
+    data: { status },
+  } = req.body;
+  const validStatuses = ["booked", "seated", "finished"];
+  if (!validStatuses.includes(status)) {
+    return next({
+      status: 400,
+      message: `Status cannot be ${status}`,
+    });
+  }
+
+  if (res.locals.reservation.status === "finished") {
+    return next({
+      status: 400,
+      message: `A finished reservation cannot be updated`,
+    });
+  }
+  next();
+}
+
 module.exports = {
   list: asyncErrorBoundary(list),
   read: [asyncErrorBoundary(reservationExists), read],
@@ -151,6 +199,12 @@ module.exports = {
     validateResTime,
     validateResTimeStrict,
     validatePeople,
+    validateStatusIsValid,
     asyncErrorBoundary(create),
+  ],
+  updateStatus: [
+    asyncErrorBoundary(reservationExists),
+    validateValidStatus,
+    asyncErrorBoundary(updateStatus),
   ],
 };

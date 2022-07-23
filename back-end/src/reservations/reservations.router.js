@@ -15,4 +15,9 @@ router
   .all(methodNotAllowed);
 
 router.route("/:resId").get(controller.read).all(methodNotAllowed);
+
+router
+  .route("/:resId/status")
+  .put(controller.updateStatus)
+  .all(methodNotAllowed);
 module.exports = router;

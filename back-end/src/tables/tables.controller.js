@@ -127,6 +127,18 @@ function validateIfTableIsOccupied(req, res, next) {
   next();
 }
 
+//The reservation is not already seated
+function validateReservationStatus(req, res, next) {
+  const reservation = res.locals.reservation;
+  if (reservation.status === "seated") {
+    return next({
+      status: 400,
+      message: "Reservation is already seated",
+    });
+  }
+  next();
+}
+
 /**
  * Middlewares to validate the DELETE request
  */
@@ -156,6 +168,7 @@ module.exports = {
     asyncErrorBoundary(validateTableExists),
     validateTableCapacity,
     validateIfTableIsOccupied,
+    validateReservationStatus,
     updateTable,
   ],
   delete: [
