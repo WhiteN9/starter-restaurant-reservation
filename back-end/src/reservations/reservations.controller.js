@@ -14,8 +14,13 @@ const hasRequiredProperties = hasProperties(
  * List handler for reservation resources
  */
 async function list(req, res) {
-  const date = req.query.date;
-  const reservationList = await service.list(date, "finished");
+  const { query } = req;
+  let reservationList = null;
+  if (query.mobile_number) {
+    reservationList = await service.listByPhone(query.mobile_number);
+  } else if (query.date) {
+    reservationList = await service.list(query.date, "finished");
+  }
   res.json({ data: reservationList });
 }
 

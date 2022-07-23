@@ -22,8 +22,9 @@ function SeatForm({
             <select
               id="table_id"
               name="table_id"
-              className="form-control required"
               onChange={handleTableSelection}
+              required
+              className="form-control"
             >
               <option value>Select a table</option>
               {tableOptions}
@@ -48,3 +49,4 @@ function SeatForm({
 }
 
 export default SeatForm;
+

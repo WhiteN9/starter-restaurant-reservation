@@ -8,6 +8,27 @@ function list(date, status) {
     .orderBy("reservation_time");
 }
 
+//Search the mobile number column.
+//For each mobile number, if it has any symbols ()- or whitespace, replaces with empty string.
+//If the mobile number is anything %LIKE% the input number (input also will be formatted), return that mobile number.
+function listByPhone(mobile_number) {
+  return knex("reservations")
+    .whereRaw(
+      "translate(mobile_number, '() -', '') like ?",
+      `%${mobile_number.replace(/\D/g, "")}%`
+    )
+    .orderBy("reservation_date");
+}
+
+function search(mobile_number) {
+  return knex("reservations")
+    .whereRaw(
+      "translate(mobile_number, '() -', '') like ?",
+      `%${mobile_number.replace(/\D/g, "")}%`
+    )
+    .orderBy("reservation_date");
+}
+
 function read(id) {
   return knex("reservations").select("*").where("reservation_id", id).first();
 }
@@ -28,6 +49,7 @@ function updateNewStatus({ reservation_id, status }) {
 
 module.exports = {
   list,
+  listByPhone,
   read,
   create,
   updateNewStatus,
