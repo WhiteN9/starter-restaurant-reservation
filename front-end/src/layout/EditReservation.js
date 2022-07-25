@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import CreateReservationForm from "./CreateReservationForm";
 import ErrorAlert from "./ErrorAlert";
-import { createReservations } from "../utils/api";
+import { readReservation, editReservation } from "../utils/api";
 
-function CreateReservation({ date }) {
+function EditReservation() {
   const history = useHistory();
+  const { resId } = useParams();
 
   const initialFormInfo = {
     first_name: "",
@@ -15,8 +16,21 @@ function CreateReservation({ date }) {
     reservation_time: "",
     people: 1,
   };
+
   const [reservationInfo, setReservationInfo] = useState(initialFormInfo);
-  const [reservationErrors, setReservationErrors] = useState([]);
+  const [errors, setErrors] = useState([]);
+
+  useEffect(loadSeatPage, []);
+  function loadSeatPage() {
+    const abortController = new AbortController();
+    setErrors([]);
+
+    readReservation(resId, abortController.signal)
+      .then(setReservationInfo)
+      .catch((error) => setErrors([...errors, error]));
+
+    return () => abortController.abort();
+  }
 
   //Validate dates prior to sending the form
   const validateReservationDateTime = () => {
@@ -56,8 +70,8 @@ function CreateReservation({ date }) {
     if (errorsArray.length === 0) {
       return true;
     } else {
-      console.log(errorsArray)
-      setReservationErrors(errorsArray);
+      console.log(errorsArray);
+      setErrors(errorsArray);
       return false;
     }
   };
@@ -65,23 +79,31 @@ function CreateReservation({ date }) {
   //Create element to display errors on the CreateReservation component
   //If index is not acceptable, use unique number generator: measuring time from current/present date in millisecond
   const reservationErrorsList = () => {
-    return reservationErrors.map((error, index) => {
+    return errors.map((error, index) => {
       return <ErrorAlert key={index} error={error} />;
     });
   };
 
   //Send the reservation info to the express server
-  const handleCreateReservations = async (evt) => {
+  const handleEditReservation = async (evt) => {
     evt.preventDefault();
-    if (validateReservationDateTime()) {
-      await createReservations({
-        ...reservationInfo,
-        people: parseInt(reservationInfo.people),
-      });
+
+    try {
+      if (validateReservationDateTime()) {
+        await editReservation({
+          ...reservationInfo,
+          people: parseInt(reservationInfo.people),
+        });
+      }
       setReservationInfo(initialFormInfo);
       history.push(`/dashboard?date=${reservationInfo.reservation_date}`);
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setErrors(error);
+      } else return;
     }
   };
+  console.log(errors);
 
   //Go back to the previous page or to the dashboard after clicking cancel
   const onCancel = () => {
@@ -93,10 +115,10 @@ function CreateReservation({ date }) {
 
   return (
     <main>
-      <h1>Create Reservation</h1>
-      {reservationErrors.length > 0 ? reservationErrorsList() : null}
+      <h1>Edit Reservation</h1>
+      {errors.length > 0 ? reservationErrorsList() : null}
       <CreateReservationForm
-        onSubmit={handleCreateReservations}
+        onSubmit={handleEditReservation}
         onCancel={onCancel}
         reservationInfo={reservationInfo}
         setReservationInfo={setReservationInfo}
@@ -107,4 +129,4 @@ function CreateReservation({ date }) {
   );
 }
 
-export default CreateReservation;
+export default EditReservation;

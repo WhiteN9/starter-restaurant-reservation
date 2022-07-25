@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import SearchForm from "./SearchForm";
 import { listReservations } from "../utils/api";
@@ -8,11 +8,23 @@ function Search() {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
-  // useEffect(renderTableHead(), [reservations]);
+  // const handleCancelClick = async (evt) => {
+  //   try {
+  //     if (
+  //       window.confirm(
+  //         "Do you want to cancel this reservation? This cannot be undone."
+  //       )
+  //     ) {
+  //       const abortController = new AbortController();
+  //       const reservation_id = evt.target.getAttribute(
+  //         "data-reservation-id-cancel"
+  //       );
+  //       await clearFinishedTable(reservation_id, abortController.signal);
 
-  // function renderTableHead() {
-  //   return;
-  // }
+  //     }
+  //   } catch (error) {}
+  // };
+
   const reservationList =
     reservations.length > 0 ? (
       reservations.map(
@@ -61,6 +73,24 @@ function Search() {
                   >
                     Seat
                   </Link>
+                </td>
+                <td>
+                  <Link
+                    className="btn btn-secondary"
+                    to={`reservations/${reservation_id}/edit`}
+                  >
+                    Edit
+                  </Link>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-reservation-id-cancel={reservation_id}
+                    // onClick={handleCancelClick}
+                  >
+                    Cancel
+                  </button>
                 </td>
               </tr>
             );
