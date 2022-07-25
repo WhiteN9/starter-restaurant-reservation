@@ -22,7 +22,6 @@ function Dashboard() {
   const [date, setDate] = useState(today());
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-
   const [tables, setTables] = useState([]);
 
   useEffect(loadDashboard, [date]);
@@ -30,8 +29,8 @@ function Dashboard() {
   function loadDashboard() {
     const abortController = new AbortController();
     setReservations([]);
-    setTables([]);
     setReservationsError(null);
+    setTables([]);
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);

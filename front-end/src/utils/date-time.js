@@ -84,13 +84,10 @@ export function next(currentDate) {
 
 //Validate dates prior to sending the form
 export function validateReservationDateTime(reservationInfo) {
-  const errorsArray = [];
+  let errorsArray = [];
   const currentDateTime = new Date();
   const reservationDateTimeString =
-    reservationInfo.reservation_date +
-    "T" +
-    reservationInfo.reservation_time +
-    ":00";
+    reservationInfo.reservation_date + "T" + reservationInfo.reservation_time;
 
   //Check if the reservation date is not a tuesday or in the past
   const reservationDateTime = new Date(reservationDateTimeString);
@@ -115,6 +112,5 @@ export function validateReservationDateTime(reservationInfo) {
       message: "Please select a time between 10:30 and 21:30",
     });
   }
-
-  return errorsArray
+  return errorsArray;
 }

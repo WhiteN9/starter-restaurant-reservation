@@ -16,21 +16,18 @@ function Seat() {
   const [reservationById, setReservationById] = useState(null);
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState(null);
-  const [errors, setErrors] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(loadSeatPage, [resId]);
   function loadSeatPage() {
     setReservationById(null);
     setTables([]);
-    setErrors([]);
+    setError(null);
     const abortController = new AbortController();
-    setErrors([]);
-    listTables(abortController.signal)
-      .then(setTables)
-      .catch((error) => setErrors([...errors, error]));
+    listTables(abortController.signal).then(setTables).catch(setError);
     readReservation(resId, abortController.signal)
       .then(setReservationById)
-      .catch((error) => setErrors([...errors, error]));
+      .catch(setError);
 
     return () => abortController.abort();
   }
@@ -51,26 +48,15 @@ function Seat() {
     </h3>
   ) : null;
 
-  //Create an element to display errors on the Seat component
-  const reservationErrorsList = () => {
-    return errors.map((error) => {
-      return <ErrorAlert key={Date.now()} error={error} />;
-    });
-  };
-
-  //convert try/catch
   const handleTableSubmission = async (evt) => {
     evt.preventDefault();
-    setErrors([]);
     setReservationById(null);
     setSelectedTable(null);
+    setError(null);
     if (reservationById.people > selectedTable.capacity) {
-      setErrors([
-        ...errors,
-        {
-          message: `Table does not have enough capacity. Seating for ${reservationById.people} is needed.`,
-        },
-      ]);
+      setError({
+        message: `Table does not have enough capacity. Seating for ${reservationById.people} is needed.`,
+      });
       return;
     }
     try {
@@ -82,10 +68,10 @@ function Seat() {
         },
         abortController.signal
       );
-      history.push(`/dashboard`);
+      history.push(`/dashboard?date=${reservationById.reservation_date}`);
     } catch (error) {
       if (error.name !== "AbortError") {
-        setErrors([...errors, error]);
+        setError(error);
       } else return;
     }
   };
@@ -99,7 +85,11 @@ function Seat() {
   return (
     <main>
       <h1>Seat Reservation</h1>
-      {errors.length > 0 ? reservationErrorsList() : renderReservation}
+      {error ? (
+        <ErrorAlert key={Date.now()} error={error} />
+      ) : (
+        renderReservation
+      )}
       <SeatForm
         onSubmit={handleTableSubmission}
         onCancel={onCancel}

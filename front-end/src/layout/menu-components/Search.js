@@ -6,13 +6,13 @@ import { listReservations, cancelReservation } from "../../utils/api";
 function Search() {
   const [mobileNumber, setMobileNumber] = useState({ mobile_number: "" });
   const [reservations, setReservations] = useState([]);
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState(null);
 
   const formattedMobileNumber = mobileNumber.mobile_number.replace(/\D/g, "");
 
   const handleCancelClick = async (evt) => {
     evt.preventDefault();
-    setMobileNumber("");
+    setMobileNumber({ mobile_number: "" });
     setReservations([]);
     setErrors(null);
     try {
@@ -44,14 +44,13 @@ function Search() {
       }
     } catch (error) {
       if (error.name !== "AbortError") {
-        setErrors([...errors, error]);
+        setErrors(error);
       } else return;
     }
   };
 
   const findHandler = async (evt) => {
     evt.preventDefault();
-    setMobileNumber("");
     setReservations([]);
     setErrors(null);
     try {
@@ -68,7 +67,7 @@ function Search() {
       } else throw Error("No reservations found.");
     } catch (error) {
       if (error.name !== "AbortError") {
-        setErrors([...errors, error]);
+        setErrors(error);
       } else return;
     }
   };

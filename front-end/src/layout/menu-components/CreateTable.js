@@ -12,18 +12,13 @@ function CreateTable() {
     capacity: 0,
   };
   const [tableInfo, setTableInfo] = useState(initialTableInfo);
-  const [errors, setErrors] = useState([]);
-
-  const errorsList = () => {
-    return errors.map((error) => {
-      return <ErrorAlert key={Date.now()} error={error} />;
-    });
-  };
+  const [error, setError] = useState(null);
 
   //Send the table info to the express server
   const handleCreateTable = async (evt) => {
     evt.preventDefault();
-    setErrors([]);
+    setTableInfo(initialTableInfo);
+    setError(null);
     try {
       const abortController = new AbortController();
       await createTables(
@@ -33,11 +28,10 @@ function CreateTable() {
         },
         abortController.signal
       );
-      setTableInfo(initialTableInfo);
       history.push("/");
     } catch (error) {
       if (error.name !== "AbortError") {
-        setErrors([...errors, error]);
+        setError(error);
       } else return;
     }
   };
@@ -52,7 +46,7 @@ function CreateTable() {
   return (
     <main>
       <h1>Create Table</h1>
-      {errors.length > 0 ? errorsList() : null}
+      {error ? <ErrorAlert key={Date.now()} error={error} /> : null}
       <CreateTableForm
         onSubmit={handleCreateTable}
         onCancel={onCancel}
