@@ -4,19 +4,21 @@ import SeatForm from "./SeatForm";
 import ErrorAlert from "../../ErrorAlert";
 import { listTables, readReservation, updateTable } from "../../../utils/api";
 
+/**
+ * This component takes the user to the Seat page of the Reservation to assign a seat.
+ * @returns {JSX.Element}
+ */
+
 function Seat() {
   const history = useHistory();
   const { resId } = useParams();
-
-  //create a new table state
-  //if there is a change in table state, meaning a table is selected.
 
   const [reservationById, setReservationById] = useState(null);
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState(null);
   const [errors, setErrors] = useState([]);
 
-  useEffect(loadSeatPage, [resId, selectedTable]);
+  useEffect(loadSeatPage, [selectedTable]);
   function loadSeatPage() {
     const abortController = new AbortController();
     setErrors([]);
@@ -48,13 +50,17 @@ function Seat() {
 
   //Create an element to display errors on the Seat component
   const reservationErrorsList = () => {
-    return errors.map((error, index) => {
-      return <ErrorAlert key={index} error={error} />;
+    return errors.map((error) => {
+      return <ErrorAlert key={Date.now()} error={error} />;
     });
   };
 
+  //convert try/catch
   const handleTableSubmission = async (evt) => {
     evt.preventDefault();
+    setErrors([]);
+    setReservationById(null);
+    setSelectedTable(null);
     if (reservationById.people > selectedTable.capacity) {
       setErrors([
         ...errors,
@@ -64,12 +70,16 @@ function Seat() {
       ]);
       return;
     }
-    await updateTable(selectedTable.table_id, {
-      reservation_id: reservationById.reservation_id,
-    });
-    setReservationById(null);
-    setSelectedTable(null);
-    history.push(`/dashboard`);
+    try {
+      await updateTable(selectedTable.table_id, {
+        reservation_id: reservationById.reservation_id,
+      });
+      history.push(`/dashboard`);
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setErrors([...errors, error]);
+      } else return;
+    }
   };
 
   const onCancel = () => {

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import CreateReservationForm from "./CreateReservationForm";
+import ReservationForm from "./reservation-components/ReservationForm";
 import ErrorAlert from "../ErrorAlert";
 import { createReservations } from "../../utils/api";
+import { validateReservationDateTime } from "../../utils/date-time";
 
-function CreateReservation({ date }) {
+function CreateReservation() {
   const history = useHistory();
 
   const initialFormInfo = {
@@ -19,44 +20,13 @@ function CreateReservation({ date }) {
   const [reservationErrors, setReservationErrors] = useState([]);
 
   //Validate dates prior to sending the form
-  const validateReservationDateTime = () => {
-    const errorsArray = [];
-    const currentDateTime = new Date();
-    const reservationDateTimeString =
-      reservationInfo.reservation_date +
-      "T" +
-      reservationInfo.reservation_time +
-      ":00";
-
-    //Check if the reservation date is not a tuesday or in the past
-    const reservationDateTime = new Date(reservationDateTimeString);
-    if (reservationDateTime.getDay() === 2) {
-      errorsArray.push({ message: "The restaurant is closed on Tuesday." });
-    }
-    if (reservationDateTime < currentDateTime) {
-      errorsArray.push({
-        message: "Reservation date/time must occur in the future.",
-      });
-    }
-
-    //Check if the reservation time is within the valid timeframe
-    const resHour = reservationDateTime.getHours();
-    const resMinutes = reservationDateTime.getMinutes();
-    if ((resHour === 10 && resMinutes <= 29) || resHour < 10) {
-      errorsArray.push({
-        message: "Please select a time between 10:30 and 21:30",
-      });
-    } else if ((resHour === 21 && resMinutes >= 31) || resHour > 21) {
-      errorsArray.push({
-        message: "Please select a time between 10:30 and 21:30",
-      });
-    }
+  const validateResDateTime = () => {
+    const errorsArray = validateReservationDateTime(reservationInfo);
 
     //If there is any error, set the error objects and render the error instead of submitting form
     if (errorsArray.length === 0) {
       return true;
     } else {
-      console.log(errorsArray);
       setReservationErrors(errorsArray);
       return false;
     }
@@ -65,21 +35,28 @@ function CreateReservation({ date }) {
   //Create element to display errors on the CreateReservation component
   //If index is not acceptable, use unique number generator: measuring time from current/present date in millisecond
   const reservationErrorsList = () => {
-    return reservationErrors.map((error, index) => {
-      return <ErrorAlert key={index} error={error} />;
+    return reservationErrors.map((error) => {
+      return <ErrorAlert key={Date.now()} error={error} />;
     });
   };
 
   //Send the reservation info to the express server
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
-    if (validateReservationDateTime()) {
-      await createReservations({
-        ...reservationInfo,
-        people: parseInt(reservationInfo.people),
-      });
-      setReservationInfo(initialFormInfo);
-      history.push(`/dashboard?date=${reservationInfo.reservation_date}`);
+    setReservationErrors([]);
+    try {
+      if (validateResDateTime()) {
+        await createReservations({
+          ...reservationInfo,
+          people: parseInt(reservationInfo.people),
+        });
+        setReservationInfo(initialFormInfo);
+        history.push(`/dashboard?date=${reservationInfo.reservation_date}`);
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setReservationInfo(initialFormInfo);
+      } else return;
     }
   };
 
@@ -95,7 +72,7 @@ function CreateReservation({ date }) {
     <main>
       <h1>Create Reservation</h1>
       {reservationErrors.length > 0 ? reservationErrorsList() : null}
-      <CreateReservationForm
+      <ReservationForm
         onSubmit={handleCreateReservations}
         onCancel={onCancel}
         reservationInfo={reservationInfo}

@@ -1,107 +1,51 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import SearchForm from "./SearchForm";
-import { listReservations } from "../../utils/api";
+import ReservationList from "./reservation-components/ReservationList";
+import { listReservations, cancelReservation } from "../../utils/api";
 
 function Search() {
   const [mobileNumber, setMobileNumber] = useState({ mobile_number: "" });
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
-  // const handleCancelClick = async (evt) => {
-  //   try {
-  //     if (
-  //       window.confirm(
-  //         "Do you want to cancel this reservation? This cannot be undone."
-  //       )
-  //     ) {
-  //       const abortController = new AbortController();
-  //       const reservation_id = evt.target.getAttribute(
-  //         "data-reservation-id-cancel"
-  //       );
-  //       await clearFinishedTable(reservation_id, abortController.signal);
+  //rework
+  const handleCancelClick = async (evt) => {
 
-  //     }
-  //   } catch (error) {}
-  // };
-
-  const reservationList =
-    reservations.length > 0 ? (
-      reservations.map(
-        ({
+    try {
+      if (
+        window.confirm(
+          "Do you want to cancel this reservation? This cannot be undone."
+        )
+      ) {
+        const abortController = new AbortController();
+        const reservation_id = evt.target.getAttribute(
+          "data-reservation-id-cancel"
+        );
+        await cancelReservation(
+          { status: "cancelled" },
           reservation_id,
-          first_name,
-          last_name,
-          mobile_number,
-          reservation_date,
-          reservation_time,
-          people,
-          status,
-        }) => {
-          if (status === "finished") {
-            return null;
-          } else if (status === "seated") {
-            return (
-              <tr key={reservation_id}>
-                <th scope={reservation_id}>{reservation_id}</th>
-                <td>
-                  {last_name}, {first_name}
-                </td>
-                <td>{mobile_number}</td>
-                <td>{reservation_date}</td>
-                <td>{reservation_time}</td>
-                <td>{people}</td>
-                <td data-reservation-id-status={reservation_id}>{status}</td>
-              </tr>
-            );
-          } else if (status === "booked") {
-            return (
-              <tr key={reservation_id}>
-                <th scope={reservation_id}>{reservation_id}</th>
-                <td>
-                  {last_name}, {first_name}
-                </td>
-                <td>{mobile_number}</td>
-                <td>{reservation_date}</td>
-                <td>{reservation_time}</td>
-                <td>{people}</td>
-                <td data-reservation-id-status={reservation_id}>{status}</td>
-                <td>
-                  <Link
-                    className="btn btn-secondary"
-                    to={`reservations/${reservation_id}/seat`}
-                  >
-                    Seat
-                  </Link>
-                </td>
-                <td>
-                  <Link
-                    className="btn btn-secondary"
-                    to={`reservations/${reservation_id}/edit`}
-                  >
-                    Edit
-                  </Link>
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    data-reservation-id-cancel={reservation_id}
-                    // onClick={handleCancelClick}
-                  >
-                    Cancel
-                  </button>
-                </td>
-              </tr>
-            );
-          }
-        }
-      )
-    ) : (
-      <tr>
-        <td colSpan={6}>No reservations found.</td>
-      </tr>
-    );
+          abortController.signal
+        );
+
+        const mobileNumberDigitsOnly = mobileNumber.mobile_number.replace(
+          /\D/g,
+          ""
+        );
+        await listReservations(
+          {
+            mobile_number: mobileNumberDigitsOnly,
+          },
+          abortController.signal
+        )
+          .then((response) => {
+            if (response.length > 0) {
+              setReservations(response);
+            } else throw Error("No reservations found.");
+          })
+          .catch(setReservationsError);
+      }
+    } catch (error) {}
+  };
 
   const findHandler = async (evt) => {
     evt.preventDefault();
@@ -134,7 +78,6 @@ function Search() {
     }
   };
 
-  console.log(reservationsError);
   return (
     <main>
       <h1>Search Reservations</h1>
@@ -158,7 +101,13 @@ function Search() {
                 <th scope="col">STATUS</th>
               </tr>
             </thead>
-            <tbody>{reservationList}</tbody>
+            <tbody>
+              <ReservationList
+                reservations={reservations}
+                handleCancelClick={handleCancelClick}
+                renderStatus="all"
+              />
+            </tbody>
           </table>
         </div>
       ) : null}

@@ -7,24 +7,13 @@ import EditReservation from "./menu-components/reservation-components/EditReserv
 import CreateTable from "./menu-components/CreateTable";
 import Search from "./menu-components/Search";
 import NotFound from "./NotFound";
-import { today } from "../utils/date-time";
-import useQuery from "../utils/useQuery";
 
 /**
  * Defines all the routes for the application.
- *
- * You will need to make changes to this file.
- *
  * @returns {JSX.Element}
  */
-//why do we use useQuery here
+
 function Routes() {
-  const query = useQuery();
-  //get the date from the query
-  const date = query.get("date");
-  // console.log("url date in Router: ", date);
-  //pass in that date as
-  // let date = today();
   return (
     <Switch>
       <Route exact={true} path="/">
@@ -37,7 +26,7 @@ function Routes() {
         <Dashboard />
       </Route>
       <Route path="/reservations/new">
-        <CreateReservation date={today()} />
+        <CreateReservation />
       </Route>
       <Route path="/reservations/:resId/seat">
         <Seat />

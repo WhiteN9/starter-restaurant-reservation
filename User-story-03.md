@@ -1,1 +1,0 @@
-Lump all the errors together?
