@@ -43,14 +43,18 @@ function CreateReservation() {
   //Send the reservation info to the express server
   const handleCreateReservations = async (evt) => {
     evt.preventDefault();
+    setReservationInfo(initialFormInfo);
     setReservationErrors([]);
     try {
+      const abortController = new AbortController();
       if (validateResDateTime()) {
-        await createReservations({
-          ...reservationInfo,
-          people: parseInt(reservationInfo.people),
-        });
-        setReservationInfo(initialFormInfo);
+        await createReservations(
+          {
+            ...reservationInfo,
+            people: parseInt(reservationInfo.people),
+          },
+          abortController.signal
+        );
         history.push(`/dashboard?date=${reservationInfo.reservation_date}`);
       }
     } catch (error) {

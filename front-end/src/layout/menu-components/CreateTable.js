@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import CreateTableForm from "./CreateTableForm";
+import ErrorAlert from "../ErrorAlert";
 import { createTables } from "../../utils/api";
 
 function CreateTable() {
@@ -11,17 +12,34 @@ function CreateTable() {
     capacity: 0,
   };
   const [tableInfo, setTableInfo] = useState(initialTableInfo);
+  const [errors, setErrors] = useState([]);
+
+  const errorsList = () => {
+    return errors.map((error) => {
+      return <ErrorAlert key={Date.now()} error={error} />;
+    });
+  };
 
   //Send the table info to the express server
-  //convert try/catch
   const handleCreateTable = async (evt) => {
     evt.preventDefault();
-    await createTables({
-      ...tableInfo,
-      capacity: parseInt(tableInfo.capacity),
-    });
-    setTableInfo(initialTableInfo);
-    history.push("/");
+    setErrors([]);
+    try {
+      const abortController = new AbortController();
+      await createTables(
+        {
+          ...tableInfo,
+          capacity: parseInt(tableInfo.capacity),
+        },
+        abortController.signal
+      );
+      setTableInfo(initialTableInfo);
+      history.push("/");
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setErrors([...errors, error]);
+      } else return;
+    }
   };
 
   //Go back to the previous page or to the dashboard after clicking cancel
@@ -34,6 +52,7 @@ function CreateTable() {
   return (
     <main>
       <h1>Create Table</h1>
+      {errors.length > 0 ? errorsList() : null}
       <CreateTableForm
         onSubmit={handleCreateTable}
         onCancel={onCancel}
