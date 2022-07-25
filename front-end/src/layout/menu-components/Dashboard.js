@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ErrorAlert from "../layout/ErrorAlert";
+import ErrorAlert from "../ErrorAlert";
 import {
   listReservations,
   listTables,
   clearFinishedTable,
   cancelReservation,
-} from "../utils/api";
-import { today, previous, next } from "../utils/date-time";
-import useQuery from "../utils/useQuery";
+} from "../../utils/api";
+import { today, previous, next } from "../../utils/date-time";
+import useQuery from "../../utils/useQuery";
 /**
  * Defines the dashboard page.
  * @param date

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import SearchForm from "./SearchForm";
-import { listReservations } from "../utils/api";
+import { listReservations } from "../../utils/api";
 
 function Search() {
   const [mobileNumber, setMobileNumber] = useState({ mobile_number: "" });

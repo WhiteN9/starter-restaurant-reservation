@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import CreateReservationForm from "./CreateReservationForm";
-import ErrorAlert from "./ErrorAlert";
-import { createReservations } from "../utils/api";
+import ErrorAlert from "../ErrorAlert";
+import { createReservations } from "../../utils/api";
 
 function CreateReservation({ date }) {
   const history = useHistory();
@@ -56,7 +56,7 @@ function CreateReservation({ date }) {
     if (errorsArray.length === 0) {
       return true;
     } else {
-      console.log(errorsArray)
+      console.log(errorsArray);
       setReservationErrors(errorsArray);
       return false;
     }

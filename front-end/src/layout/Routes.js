@@ -1,11 +1,11 @@
 import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import Dashboard from "../dashboard/Dashboard";
-import CreateReservation from "./CreateReservation";
-import Seat from "./Seat";
-import EditReservation from "./EditReservation";
-import CreateTable from "../tables/CreateTable";
-import Search from "./Search";
+import Dashboard from "./menu-components/Dashboard";
+import CreateReservation from "./menu-components/CreateReservation";
+import Seat from "./menu-components/reservation-components/Seat";
+import EditReservation from "./menu-components/reservation-components/EditReservation";
+import CreateTable from "./menu-components/CreateTable";
+import Search from "./menu-components/Search";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
 import useQuery from "../utils/useQuery";

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import CreateTableForm from "./CreateTableForm";
-import { createTables } from "../utils/api";
+import { createTables } from "../../utils/api";
 
 function CreateTable() {
   const history = useHistory();

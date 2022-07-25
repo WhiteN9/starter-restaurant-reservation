@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import SeatForm from "./SeatForm";
-import ErrorAlert from "./ErrorAlert";
-import { listTables, readReservation, updateTable } from "../utils/api";
+import ErrorAlert from "../../ErrorAlert";
+import { listTables, readReservation, updateTable } from "../../../utils/api";
 
 function Seat() {
   const history = useHistory();
