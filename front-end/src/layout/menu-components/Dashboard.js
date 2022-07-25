@@ -39,15 +39,16 @@ function Dashboard() {
     return () => abortController.abort();
   }
 
+  /**
+   * Initialize the querydate, it will be null because on initial load there is nothing in the url.
+   * Every time we click a button, there is a param change in the url
+   * The queryDate is updated every time we click,
+   * We use useEffect to observe the change in `queryDate`
+   * When there is a change, we set the `date` to be the `queryDate`
+   * We display `date` on the board
+   */
   const query = useQuery();
-  //initialize the querydate, it will be null because on initial load there is nothing in the url
   let queryDate = query.get("date");
-  //every time we click a button, there is a param change in the url
-  //the queryDate is updated every time we click,
-  //we use useEffect to observe the change in `queryDate`
-  //when there is a change, we set the `date` to be the `queryDate`
-  //we display `date` on the board
-
   useEffect(dateChange, [queryDate]);
 
   function dateChange() {
@@ -149,8 +150,7 @@ function Dashboard() {
               className="btn btn-secondary"
               to={`/dashboard?date=${next(date)}`}
             >
-              <span className="oi oi-chevron-right"></span>
-              &nbsp;Next
+              Next&nbsp;<span className="oi oi-chevron-right"></span>
             </Link>
           </div>
           <div className="table-responsive">
