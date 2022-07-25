@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import CreateTableForm from "./CreateTableForm";
-import { createTables } from "../utils/api";
+import { createTables } from "../../utils/api";
 
 function CreateTable() {
   const history = useHistory();
@@ -13,6 +13,7 @@ function CreateTable() {
   const [tableInfo, setTableInfo] = useState(initialTableInfo);
 
   //Send the table info to the express server
+  //convert try/catch
   const handleCreateTable = async (evt) => {
     evt.preventDefault();
     await createTables({

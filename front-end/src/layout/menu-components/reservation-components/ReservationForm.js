@@ -1,9 +1,11 @@
 import React from "react";
 
-//datemin = today
-//form-group and form-control class will help to style the inputs
-//update the input handler to add dash for evt.target.phone
-function CreateReservationForm({
+/**
+ * This component can handle creating new reservation and editing existing reservation.
+ * @returns {JSX.Element}
+ */
+
+function ReservationForm({
   onSubmit,
   onCancel,
   reservationInfo,
@@ -119,4 +121,4 @@ function CreateReservationForm({
   );
 }
 
-export default CreateReservationForm;
+export default ReservationForm;

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ErrorAlert from "../layout/ErrorAlert";
+import ReservationList from "./reservation-components/ReservationList";
+import ErrorAlert from "../ErrorAlert";
 import {
   listReservations,
   listTables,
   clearFinishedTable,
   cancelReservation,
-} from "../utils/api";
-import { today, previous, next } from "../utils/date-time";
-import useQuery from "../utils/useQuery";
+} from "../../utils/api";
+import { today, previous, next } from "../../utils/date-time";
+import useQuery from "../../utils/useQuery";
 /**
  * Defines the dashboard page.
  * @param date
@@ -40,10 +41,8 @@ function Dashboard() {
   const query = useQuery();
   //initialize the querydate, it will be null because on initial load there is nothing in the url
   let queryDate = query.get("date");
-  console.log(queryDate);
   //every time we click a button, there is a param change in the url
-  //and somehow the queryDate is updated every time we click,
-  //so, we make use of that,
+  //the queryDate is updated every time we click,
   //we use useEffect to observe the change in `queryDate`
   //when there is a change, we set the `date` to be the `queryDate`
   //we display `date` on the board
@@ -75,106 +74,6 @@ function Dashboard() {
     }
   };
 
-  const handleCancelClick = async (evt) => {
-    try {
-      if (
-        window.confirm(
-          "Do you want to cancel this reservation? This cannot be undone."
-        )
-      ) {
-        const abortController = new AbortController();
-        const reservation_id = evt.target.getAttribute(
-          "data-reservation-id-cancel"
-        );
-        await cancelReservation(
-          { status: "cancelled" },
-          reservation_id,
-          abortController.signal
-        );
-        loadDashboard();
-      }
-    } catch (error) {}
-  };
-
-  //after receiving an array of reservations, we need to format it and put it in the table
-  const reservationList =
-    reservations.length > 0 ? (
-      reservations.map(
-        ({
-          reservation_id,
-          first_name,
-          last_name,
-          mobile_number,
-          reservation_date,
-          reservation_time,
-          people,
-          status,
-        }) => {
-          if (status === "finished") {
-            return null;
-          } else if (status === "seated") {
-            return (
-              <tr key={reservation_id}>
-                <th scope={reservation_id}>{reservation_id}</th>
-                <td>
-                  {last_name}, {first_name}
-                </td>
-                <td>{mobile_number}</td>
-                <td>{reservation_date}</td>
-                <td>{reservation_time}</td>
-                <td>{people}</td>
-                <td data-reservation-id-status={reservation_id}>{status}</td>
-              </tr>
-            );
-          } else if (status === "booked") {
-            return (
-              <tr key={reservation_id}>
-                <th scope={reservation_id}>{reservation_id}</th>
-                <td>
-                  {last_name}, {first_name}
-                </td>
-                <td>{mobile_number}</td>
-                <td>{reservation_date}</td>
-                <td>{reservation_time}</td>
-                <td>{people}</td>
-                <td data-reservation-id-status={reservation_id}>{status}</td>
-                <td>
-                  <Link
-                    className="btn btn-secondary"
-                    to={`reservations/${reservation_id}/seat`}
-                  >
-                    Seat
-                  </Link>
-                </td>
-                <td>
-                  <Link
-                    className="btn btn-secondary"
-                    to={`reservations/${reservation_id}/edit`}
-                  >
-                    Edit
-                  </Link>
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    data-reservation-id-cancel={reservation_id}
-                    onClick={handleCancelClick}
-                  >
-                    Cancel
-                  </button>
-                </td>
-              </tr>
-            );
-          }
-        }
-      )
-    ) : (
-      <tr>
-        <td colSpan={6}>No reservations found.</td>
-      </tr>
-    );
-
   const tableList = tables.map(
     ({ table_id, table_name, capacity, reservation_id }) => {
       return (
@@ -201,6 +100,28 @@ function Dashboard() {
       );
     }
   );
+
+  const handleCancelClick = async (evt) => {
+    try {
+      if (
+        window.confirm(
+          "Do you want to cancel this reservation? This cannot be undone."
+        )
+      ) {
+        const abortController = new AbortController();
+        const reservation_id = evt.target.getAttribute(
+          "data-reservation-id-cancel"
+        );
+        await cancelReservation(
+          { status: "cancelled" },
+          reservation_id,
+          abortController.signal
+        );
+        loadDashboard();
+      }
+    } catch (error) {}
+  };
+
   return (
     <main>
       <h1>Dashboard</h1>
@@ -244,7 +165,13 @@ function Dashboard() {
                   <th scope="col">STATUS</th>
                 </tr>
               </thead>
-              <tbody>{reservationList}</tbody>
+              <tbody>
+                <ReservationList
+                  reservations={reservations}
+                  handleCancelClick={handleCancelClick}
+                  renderStatus="strict"
+                />
+              </tbody>
             </table>
           </div>
         </div>

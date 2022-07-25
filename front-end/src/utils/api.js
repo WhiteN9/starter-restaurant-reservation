@@ -187,6 +187,7 @@ export async function updateTable(tableId, data, signal) {
     headers,
     signal,
     method: "PUT",
+    body: JSON.stringify({ data }),
   };
   return await fetchJson(url, options, []);
 }
