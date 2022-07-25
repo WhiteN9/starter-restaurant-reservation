@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
-import { listReservations, listTables, clearFinishedTable } from "../utils/api";
+import {
+  listReservations,
+  listTables,
+  clearFinishedTable,
+  cancelReservation,
+} from "../utils/api";
 import { today, previous, next } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
 /**
@@ -70,6 +75,27 @@ function Dashboard() {
     }
   };
 
+  const handleCancelClick = async (evt) => {
+    try {
+      if (
+        window.confirm(
+          "Do you want to cancel this reservation? This cannot be undone."
+        )
+      ) {
+        const abortController = new AbortController();
+        const reservation_id = evt.target.getAttribute(
+          "data-reservation-id-cancel"
+        );
+        await cancelReservation(
+          { status: "cancelled" },
+          reservation_id,
+          abortController.signal
+        );
+        loadDashboard();
+      }
+    } catch (error) {}
+  };
+
   //after receiving an array of reservations, we need to format it and put it in the table
   const reservationList =
     reservations.length > 0 ? (
@@ -119,6 +145,24 @@ function Dashboard() {
                   >
                     Seat
                   </Link>
+                </td>
+                <td>
+                  <Link
+                    className="btn btn-secondary"
+                    to={`reservations/${reservation_id}/edit`}
+                  >
+                    Edit
+                  </Link>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-reservation-id-cancel={reservation_id}
+                    onClick={handleCancelClick}
+                  >
+                    Cancel
+                  </button>
                 </td>
               </tr>
             );

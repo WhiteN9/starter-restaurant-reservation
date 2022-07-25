@@ -77,7 +77,7 @@ export async function listReservations(params, signal) {
  */
 export async function readReservation(resId, signal) {
   const url = new URL(`${API_BASE_URL}/reservations/${resId}`);
-  return await fetchJson(url, { headers, signal }, {})
+  return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
@@ -89,7 +89,7 @@ export async function readReservation(resId, signal) {
  * @param signal
  *  optional AbortController.signal
  * @returns {Promise<deck>}
- *  a promise that resolves the saved reservation, with an `id` property
+ *  a promise that resolves the saved reservation, with an `id` property.
  */
 export async function createReservations(data, signal) {
   const url = new URL(`${API_BASE_URL}/reservations`);
@@ -97,6 +97,46 @@ export async function createReservations(data, signal) {
     headers,
     signal,
     method: "POST",
+    body: JSON.stringify({ data }),
+  };
+  return await fetchJson(url, options, data);
+}
+
+/**
+ * Sends the reservation form to the express server after validating the form.
+ * @param data
+ *  The reservation form to save.
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<deck>}
+ *  a promise that resolves an updated reservation.
+ */
+export async function editReservation(data, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations/${data.reservation_id}`);
+  const options = {
+    headers,
+    signal,
+    method: "PUT",
+    body: JSON.stringify({ data }),
+  };
+  return await fetchJson(url, options, data);
+}
+
+/**
+ * Sends the reservation id to the server to cancel the order.
+ * @param reservation_id
+ *  The reservation id to be cancelled.
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<deck>}
+ *  a promise that resolves a cancelled reservation.
+ */
+export async function cancelReservation(data, reservation_id, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}/status`);
+  const options = {
+    headers,
+    signal,
+    method: "PUT",
     body: JSON.stringify({ data }),
   };
   return await fetchJson(url, options, data);
@@ -134,8 +174,8 @@ export async function createTables(data, signal) {
 
 /**
  * Sends the seat form to the express server after validating the form.
- * @param data
- *  The id of the table and id of the reservation to be updated.
+ * @param url
+ *  Containing the table id
  * @param signal
  *  optional AbortController.signal
  * @returns {Promise<deck>}
@@ -147,9 +187,8 @@ export async function updateTable(tableId, data, signal) {
     headers,
     signal,
     method: "PUT",
-    body: JSON.stringify({ data }),
   };
-  return await fetchJson(url, options, data);
+  return await fetchJson(url, options, []);
 }
 
 /**

@@ -46,6 +46,19 @@ async function create(req, res) {
   const createdReservation = await service.create(newReservation);
   res.status(201).json({ data: createdReservation });
 }
+
+/**
+ * Put handler for updating the information of a reservation
+ */
+async function editReservation(req, res) {
+  const updateReservation = {
+    ...res.locals.reservation,
+    ...req.body.data,
+  };
+  const updatedRes = await service.updateReservation(updateReservation);
+  res.json({ data: updatedRes });
+}
+
 /**
  * Put handler for updating the status of a reservation
  */
@@ -110,10 +123,13 @@ function validateResDateIsNotTuesday(req, res, next) {
 }
 
 //Check if reservation time is in a valid time format and within a loose timeframe, 10:00 - 21:59
+//This is not exactly the good way to check because time input can be hh:mm:ss instead of hh:mm
+//We work around by edit the reservation_time
 function validateResTime(req, res, next) {
   const hour24Regex = /^(1[0-9]|2[0-1]):[0-5][0-9]$/;
   const { data: { reservation_time } = {} } = req.body;
-  if (!reservation_time || !hour24Regex.test(reservation_time)) {
+  let time = reservation_time.slice(0,5)
+  if (!time || !hour24Regex.test(time)) {
     return next({
       status: 400,
       message: `reservation_time must be a number within 23:59`,
@@ -148,7 +164,6 @@ function validateResTimeStrict(req, res, next) {
 //Check if people is not a number
 function validatePeople(req, res, next) {
   const { data: { people } = {} } = req.body;
-  // console.log(people, typeof people);
   if (!people || typeof people !== "number") {
     return next({
       status: 400,
@@ -173,11 +188,11 @@ function validateStatusIsValid(req, res, next) {
 /**
  * Middleware validations for the PUT update status request
  */
-function validateValidStatus(req, res, next) {
+function validateEditStatusIsValid(req, res, next) {
   const {
     data: { status },
   } = req.body;
-  const validStatuses = ["booked", "seated", "finished"];
+  const validStatuses = ["booked", "seated", "finished", "cancelled"];
   if (!validStatuses.includes(status)) {
     return next({
       status: 400,
@@ -207,9 +222,20 @@ module.exports = {
     validateStatusIsValid,
     asyncErrorBoundary(create),
   ],
+  updateReservation: [
+    asyncErrorBoundary(reservationExists),
+    hasRequiredProperties,
+    validateResDate,
+    validateResDateIsNotTuesday,
+    validateResTime,
+    validateResTimeStrict,
+    validatePeople,
+    validateStatusIsValid,
+    asyncErrorBoundary(editReservation),
+  ],
   updateStatus: [
     asyncErrorBoundary(reservationExists),
-    validateValidStatus,
+    validateEditStatusIsValid,
     asyncErrorBoundary(updateStatus),
   ],
 };
