@@ -6,11 +6,15 @@ import { listReservations, cancelReservation } from "../../utils/api";
 function Search() {
   const [mobileNumber, setMobileNumber] = useState({ mobile_number: "" });
   const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+  const [errors, setErrors] = useState([]);
 
-  //rework
+  const formattedMobileNumber = mobileNumber.mobile_number.replace(/\D/g, "");
+
   const handleCancelClick = async (evt) => {
-
+    evt.preventDefault();
+    setMobileNumber("");
+    setReservations([]);
+    setErrors(null);
     try {
       if (
         window.confirm(
@@ -27,53 +31,44 @@ function Search() {
           abortController.signal
         );
 
-        const mobileNumberDigitsOnly = mobileNumber.mobile_number.replace(
-          /\D/g,
-          ""
-        );
-        await listReservations(
+        const response = await listReservations(
           {
-            mobile_number: mobileNumberDigitsOnly,
+            mobile_number: formattedMobileNumber,
           },
           abortController.signal
-        )
-          .then((response) => {
-            if (response.length > 0) {
-              setReservations(response);
-            } else throw Error("No reservations found.");
-          })
-          .catch(setReservationsError);
+        );
+
+        if (response.length > 0) {
+          setReservations(response);
+        } else throw Error("No reservations found.");
       }
-    } catch (error) {}
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setErrors([...errors, error]);
+      } else return;
+    }
   };
 
   const findHandler = async (evt) => {
     evt.preventDefault();
+    setMobileNumber("");
     setReservations([]);
-    setReservationsError(null);
+    setErrors(null);
     try {
       const abortController = new AbortController();
-
-      const mobileNumberDigitsOnly = mobileNumber.mobile_number.replace(
-        /\D/g,
-        ""
-      );
-      await listReservations(
+      const response = await listReservations(
         {
-          mobile_number: mobileNumberDigitsOnly,
+          mobile_number: formattedMobileNumber,
         },
         abortController.signal
-      )
-        .then((response) => {
-          if (response.length > 0) {
-            setReservations(response);
-          } else throw Error("No reservations found.");
-        })
-        .catch(setReservationsError);
-      setMobileNumber(mobileNumber);
+      );
+
+      if (response.length > 0) {
+        setReservations(response);
+      } else throw Error("No reservations found.");
     } catch (error) {
       if (error.name !== "AbortError") {
-        setReservationsError(error);
+        setErrors([...errors, error]);
       } else return;
     }
   };
@@ -112,7 +107,7 @@ function Search() {
         </div>
       ) : null}
 
-      {reservationsError ? (
+      {errors ? (
         <div className="table-responsive">
           <table className="table table-striped table-dark">
             <thead>

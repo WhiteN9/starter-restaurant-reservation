@@ -8,7 +8,7 @@ import { listTables, readReservation, updateTable } from "../../../utils/api";
  * This component takes the user to the Seat page of the Reservation to assign a seat.
  * @returns {JSX.Element}
  */
-
+//adding errors as dependencies cause crash/memoryleak?
 function Seat() {
   const history = useHistory();
   const { resId } = useParams();
@@ -18,8 +18,11 @@ function Seat() {
   const [selectedTable, setSelectedTable] = useState(null);
   const [errors, setErrors] = useState([]);
 
-  useEffect(loadSeatPage, [selectedTable]);
+  useEffect(loadSeatPage, [resId]);
   function loadSeatPage() {
+    setReservationById(null);
+    setTables([]);
+    setErrors([]);
     const abortController = new AbortController();
     setErrors([]);
     listTables(abortController.signal)
@@ -71,9 +74,14 @@ function Seat() {
       return;
     }
     try {
-      await updateTable(selectedTable.table_id, {
-        reservation_id: reservationById.reservation_id,
-      });
+      const abortController = new AbortController();
+      await updateTable(
+        selectedTable.table_id,
+        {
+          reservation_id: reservationById.reservation_id,
+        },
+        abortController.signal
+      );
       history.push(`/dashboard`);
     } catch (error) {
       if (error.name !== "AbortError") {

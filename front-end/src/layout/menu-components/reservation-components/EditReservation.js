@@ -9,7 +9,7 @@ import { validateReservationDateTime } from "../../../utils/date-time";
  * This component takes the user to the Edit page of the Reservation to edit information of the reservation.
  * @returns {JSX.Element}
  */
-
+//adding errors as dependencies cause crash/memoryleak?
 function EditReservation() {
   const history = useHistory();
   const { resId } = useParams();
@@ -25,7 +25,7 @@ function EditReservation() {
   const [reservationInfo, setReservationInfo] = useState(initialFormInfo);
   const [reservationErrors, setReservationErrors] = useState([]);
 
-  useEffect(loadSeatPage, []);
+  useEffect(loadSeatPage, [resId]);
   function loadSeatPage() {
     const abortController = new AbortController();
     setReservationErrors([]);
@@ -61,6 +61,7 @@ function EditReservation() {
   //Send the edited reservation info to the express server
   const handleEditReservation = async (evt) => {
     evt.preventDefault();
+    setReservationInfo(initialFormInfo);
     setReservationErrors([]);
     try {
       const abortController = new AbortController();
@@ -73,11 +74,10 @@ function EditReservation() {
           abortController.signal
         );
       }
-      setReservationInfo(initialFormInfo);
       history.push(`/dashboard?date=${reservationInfo.reservation_date}`);
     } catch (error) {
       if (error.name !== "AbortError") {
-        setReservationInfo(initialFormInfo);
+        setReservationErrors([...reservationErrors, error]);
       } else return;
     }
   };
