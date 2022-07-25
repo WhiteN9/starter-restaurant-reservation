@@ -8,11 +8,13 @@ function Search() {
   const [reservations, setReservations] = useState([]);
   const [errors, setErrors] = useState([]);
 
-  const formattedMobileNumber = mobileNumber.mobile_number.replace(/\D/g, "");
-
+  const formattedMobileNumber =
+    mobileNumber.mobile_number.length > 0
+      ? mobileNumber.mobile_number.replace(/\D/g, "")
+      : null;
   const handleCancelClick = async (evt) => {
     evt.preventDefault();
-    setMobileNumber("");
+    setMobileNumber({ mobile_number: "" });
     setReservations([]);
     setErrors(null);
     try {
@@ -51,7 +53,7 @@ function Search() {
 
   const findHandler = async (evt) => {
     evt.preventDefault();
-    setMobileNumber("");
+    setMobileNumber({ mobile_number: "" });
     setReservations([]);
     setErrors(null);
     try {
