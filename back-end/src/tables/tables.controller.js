@@ -169,7 +169,7 @@ module.exports = {
     validateTableCapacity,
     validateIfTableIsOccupied,
     validateReservationStatus,
-    updateTable,
+    asyncErrorBoundary(updateTable),
   ],
   delete: [
     asyncErrorBoundary(validateTableExists),
