@@ -121,7 +121,11 @@ function Dashboard() {
         );
         loadDashboard();
       }
-    } catch (error) {}
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setReservationsError(error);
+      } else return;
+    }
   };
 
   return (
