@@ -1,3 +1,5 @@
+![image](https://user-images.githubusercontent.com/39269842/182003326-b1ade485-d1d1-4430-9479-fcf201c5eedc.png)
+
 # Restaurant Reservation Application
 
 The app aims to assist employees at a restaurant in managing reservations and tables. It uses an api
@@ -48,6 +50,9 @@ Created with ReactJS, Node, Express, Knex, PostgreSQL.
 - Create new tables
 
 ### Screenshots:
+![image](https://user-images.githubusercontent.com/39269842/182003284-788db2a0-1980-4170-94a9-937ff8173e47.png)
+![image](https://user-images.githubusercontent.com/39269842/182003301-4c6c9ea1-f799-4247-9937-9b50ff3d0c98.png)
+![image](https://user-images.githubusercontent.com/39269842/182003317-ae5116d8-e027-4c5c-b361-99bfc5e3066f.png)
 
 #### Reservations endpoints:
 
