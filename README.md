@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/39269842/182003262-c7079b5f-eb0a-4c74-bafa-88df8cdde4d8.png)
+![image](https://user-images.githubusercontent.com/39269842/182003326-b1ade485-d1d1-4430-9479-fcf201c5eedc.png)
 
 # Restaurant Reservation Application
 
