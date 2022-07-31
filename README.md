@@ -2,8 +2,7 @@
 
 # Restaurant Reservation Application
 
-The app aims to assist employees at a restaurant in managing reservations and tables. It uses an api
-Created with ReactJS, Node, Express, Knex, PostgreSQL.
+The app aims to assist employees at a restaurant in managing reservations and tables. App is created using ReactJS, Node, Express, Knex, PostgreSQL.
 
 [![StyleCI](https://github.styleci.io/repos/512854279/shield?branch=main)](https://github.styleci.io/repos/512854279?branch=main)
 
