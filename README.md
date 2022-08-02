@@ -96,3 +96,5 @@ The app aims to assist employees at a restaurant in managing reservations and ta
 ### Sources:
 
 This is a Capstone Project with the template designed by Thinkful. The development of this FullStack application was done by me.
+
+

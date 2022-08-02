@@ -99,7 +99,8 @@ function validateResDate(req, res, next) {
   const newResDate = new Date(reservation_date);
   if (
     !reservation_date ||
-    !dateRegex.test(reservation_date || newResDate < today)
+    !dateRegex.test(reservation_date) ||
+    newResDate < today
   ) {
     return next({
       status: 400,
@@ -109,57 +110,57 @@ function validateResDate(req, res, next) {
   next();
 }
 
-//Check if reservation date is not on a Tuesday
-function validateResDateIsNotTuesday(req, res, next) {
-  const { data: { reservation_date } = {} } = req.body;
-  const dayOfTheWeek = new Date(reservation_date).getUTCDay();
-  if (dayOfTheWeek === 2) {
-    return next({
-      status: 400,
-      message: `the store is closed on tuesday`,
-    });
-  }
-  next();
-}
+// //Check if reservation date is not on a Tuesday
+// function validateResDateIsNotTuesday(req, res, next) {
+//   const { data: { reservation_date } = {} } = req.body;
+//   const dayOfTheWeek = new Date(reservation_date).getUTCDay();
+//   if (dayOfTheWeek === 2) {
+//     return next({
+//       status: 400,
+//       message: `the store is closed on tuesday`,
+//     });
+//   }
+//   next();
+// }
 
-//Check if reservation time is in a valid time format and within a loose timeframe, 10:00 - 21:59
-//This is not exactly the good way to check because time input can be hh:mm:ss instead of hh:mm
-//We work around by edit the reservation_time
-function validateResTime(req, res, next) {
-  const hour24Regex = /^(1[0-9]|2[0-1]):[0-5][0-9]$/;
-  const { data: { reservation_time } = {} } = req.body;
-  let time = reservation_time.slice(0,5)
-  if (!time || !hour24Regex.test(time)) {
-    return next({
-      status: 400,
-      message: `reservation_time must be a number within 23:59`,
-    });
-  }
-  next();
-}
+// //Check if reservation time is in a valid time format and within a loose timeframe, 10:00 - 21:59
+// //This is not exactly the good way to check because time input can be hh:mm:ss instead of hh:mm
+// //We work around by edit the reservation_time
+// function validateResTime(req, res, next) {
+//   const hour24Regex = /^(1[0-9]|2[0-1]):[0-5][0-9]$/;
+//   const { data: { reservation_time } = {} } = req.body;
+//   let time = reservation_time.slice(0, 5);
+//   if (!time || !hour24Regex.test(time)) {
+//     return next({
+//       status: 400,
+//       message: `reservation_time must be a number within 23:59`,
+//     });
+//   }
+//   next();
+// }
 
-//Check if the reservation time is in a strict timeframe, 10:30 - 21:30
-//reservation_date = string '2022-07-27'
-function validateResTimeStrict(req, res, next) {
-  const { data: { reservation_time, reservation_date } = {} } = req.body;
-  const reservationDateTime = new Date(
-    `${reservation_date}T${reservation_time}`
-  );
-  const resHour = reservationDateTime.getHours();
-  const resMinutes = reservationDateTime.getMinutes();
-  if (
-    (resHour === 10 && resMinutes <= 29) ||
-    resHour < 10 ||
-    (resHour === 21 && resMinutes >= 31) ||
-    resHour > 21
-  ) {
-    return next({
-      status: 400,
-      message: `reservation_time must be a number within 23:59`,
-    });
-  }
-  next();
-}
+// //Check if the reservation time is in a strict timeframe, 10:30 - 21:30
+// //reservation_date = string '2022-07-27'
+// function validateResTimeStrict(req, res, next) {
+//   const { data: { reservation_time, reservation_date } = {} } = req.body;
+//   const reservationDateTime = new Date(
+//     `${reservation_date}T${reservation_time}`
+//   );
+//   const resHour = reservationDateTime.getHours();
+//   const resMinutes = reservationDateTime.getMinutes();
+//   if (
+//     (resHour === 10 && resMinutes <= 29) ||
+//     resHour < 10 ||
+//     (resHour === 21 && resMinutes >= 31) ||
+//     resHour > 21
+//   ) {
+//     return next({
+//       status: 400,
+//       message: `reservation_time must be a number within 23:59`,
+//     });
+//   }
+//   next();
+// }
 
 //Check if people is not a number
 function validatePeople(req, res, next) {
